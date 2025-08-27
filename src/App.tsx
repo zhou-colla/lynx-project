@@ -1,26 +1,25 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from '@lynx-js/react'
+
+import './App.css'
 import arrow from './assets/arrow.png'
 import lynxLogo from './assets/lynx-logo.png'
 import reactLynxLogo from './assets/react-logo.png'
 
-export function App(props: { onRender?: () => void }) {
+export function App(props: {
+  onRender?: () => void
+}) {
   const [alterLogo, setAlterLogo] = useState(false)
-  const [message, setMessage] = useState('')
   const [response, setResponse] = useState('')
+  const [message, setMessage] = useState('Hello Default Greeting')
 
   useEffect(() => {
     console.info('Hello, ReactLynx')
-    props.onRender?.()
   }, [])
+  props.onRender?.()
 
-  // Toggle logo
-  const onTap = useCallback(() => {
-    setAlterLogo(prev => !prev)
-  }, [])
-
-  // Send message to echo server
+    // Send message to echo server
   const onSend = useCallback(async () => {
-    if (!message.trim()) return
+    // if (!message.trim()) return
     try {
       const res = await fetch('https://postman-echo.com/post', {
         method: 'POST',
@@ -34,13 +33,15 @@ export function App(props: { onRender?: () => void }) {
     }
   }, [message])
 
+  const onTap = useCallback(() => {
+    'background only'
+    setAlterLogo(prevAlterLogo => !prevAlterLogo)
+  }, [])
+
   return (
     <view>
-      {/* Background */}
       <view className='Background' />
-
       <view className='App'>
-        {/* Banner with logo */}
         <view className='Banner'>
           <view className='Logo' bindtap={onTap}>
             {alterLogo
@@ -50,25 +51,21 @@ export function App(props: { onRender?: () => void }) {
           <text className='Title'>React</text>
           <text className='Subtitle'>on Lynx</text>
         </view>
-
-        {/* Description section */}
         <view className='Content'>
           <image src={arrow} className='Arrow' />
           <text className='Description'>Tap the logo and have fun!</text>
           <text className='Hint'>
-            Edit <text style={{ fontStyle: 'italic', color: 'rgba(255,255,255,0.85)' }}>
-              src/App.tsx
-            </text> to see updates!
+            Edit<text
+              style={{
+                fontStyle: 'italic',
+                color: 'rgba(255, 255, 255, 0.85)',
+              }}
+            >
+              {' src/App.tsx '}
+            </text>
+            to see updates!
           </text>
         </view>
-
-        {/* Input box */}
-        <input
-          className='TextInput'
-          placeholder="Type a message..."
-          value={message}
-          bindinput={(res: any) => setMessage(res.detail.value)}
-        />
 
         {/* Send button */}
         <view
@@ -78,10 +75,9 @@ export function App(props: { onRender?: () => void }) {
           <text style={{ color: '#fff', fontSize: 20 }}>Send</text>
         </view>
 
-        {/* Response display */}
-        <view style={{ marginTop: 20 }}>
-          <text> Echoed Response</text>
-          <text className='response-box'>{response}</text>
+        <view className='Response'>
+          <text className='Response-Title'>Response:</text>
+          <text className='Response-Message'>{response}</text>
         </view>
 
         <view style={{ flex: 1 }} />
