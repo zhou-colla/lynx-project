@@ -17,3 +17,14 @@ export interface Chat {
 export interface ChatData {
   chats: Chat[];
 }
+
+// Define the structure of a single memory object
+export interface Memory {
+  memoryID: string;
+  memoryName: string;
+  content: string;
+}
+
+export interface MemoryData {
+  memories: Memory[];
+}
