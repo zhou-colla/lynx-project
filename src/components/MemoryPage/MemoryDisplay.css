@@ -50,10 +50,10 @@
 }
 
 .ChevronIcon {
-  width: 18px;
-  height: 18px;
-  margin-right: 2px;
-  opacity: 0.7;
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  opacity: 1;
 }
 
 .MemoryContent {
@@ -71,8 +71,7 @@
   border-radius: 24px;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 48px;
+  height: 52px;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
