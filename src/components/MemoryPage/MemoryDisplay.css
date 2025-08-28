@@ -1,0 +1,87 @@
+.MemoryPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 20px;
+  background: #fff;
+  min-height: 100vh;
+}
+
+.MemoryItem {
+  width: 95%;
+  margin-bottom: 16px;
+  background: #e6ead7;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.MemoryHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 12px;
+  background: #e6ead7;
+}
+
+.MemoryDropdown {
+  font-size: 24px;
+  font-weight: 500;
+  color: #222;
+  flex: 1;
+}
+
+.MemoryIcons {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.MemoryIcon {
+  width: 26px;
+  height: 26px;
+  margin-left: 4px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.MemoryIcon:hover {
+  opacity: 1;
+}
+
+.ChevronIcon {
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+  opacity: 0.7;
+}
+
+.MemoryContent {
+  padding: 12px;
+  background: #fff;
+  color: #222;
+  font-size: 15px;
+  border-top: 1px solid #d2d7c7;
+}
+
+.AddMemoryButton {
+  width: 95%;
+  margin: 2px 0 0 0;
+  background: #b7c6a4;
+  border-radius: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 48px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.AddMemoryPlus {
+  font-size: 52px;
+  color: #fff;
+  font-weight: 400;
+  line-height: 48px;
+  text-align: center;
+  display: block;
+}
