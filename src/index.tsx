@@ -16,6 +16,8 @@ function MainApp() {
     return <ChatDisplay chatID="chat-1" />;
   } else if (currentPage === 'memory') {
     return <Memory />;
+  }else if (currentPage === 'chatsession') {
+    return <ChatSession />;
   }
 
   return <view><text>404 Page Not Found</text></view>;
