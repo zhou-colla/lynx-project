@@ -1,0 +1,30 @@
+.assistant-bubble {
+  background: #eee;
+  border-radius: 16px;
+  padding: 8px 12px;
+  margin: 4px 0;
+  max-width: 70%;
+}
+
+.user-bubble {
+  background: #E2E7D3;
+  color: white;
+  border-radius: 16px;
+  padding: 8px 12px;
+  margin: 4px 0;
+  align-self: flex-end;
+  max-width: 70%;
+}
+
+.chat-display {
+  background-color: #f0f0f0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.centered-text {
+  align-self: center;
+  /* Optional: Add a top margin for spacing */
+  margin-top: 50px; 
+}
