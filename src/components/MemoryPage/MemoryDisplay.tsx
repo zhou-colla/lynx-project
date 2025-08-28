@@ -15,6 +15,9 @@ const memoryData: Memory[] = data.memories;
 export function Memory() {
   const [memories, setMemories] = useState<Memory[]>(memoryData)
   const [openId, setOpenId] = useState<string>(memoryData[0]?.memoryID || 'default')
+  const [showAdd, setShowAdd] = useState(false)
+  const [newMemoryName, setNewMemoryName] = useState('')
+  const [newMemoryContent, setNewMemoryContent] = useState('')
 
   const handleToggle = (id: string) => {
     setOpenId(openId === id ? '' : id)
@@ -31,15 +34,29 @@ export function Memory() {
   }
 
   const handleAdd = () => {
-    const newId = `mem${Date.now()}`
-    setMemories([
-      ...memories,
-      {
-        memoryID: newId,
-        memoryName: `Memory ${String.fromCharCode(65 + memories.length)}`,
-        content: '',
-      },
-    ])
+    setShowAdd(true)
+  }
+
+  const handleAddConfirm = () => {
+    if (!newMemoryName.trim()) return
+
+    // Find the highest existing integer ID and increment by 1
+    const maxId = memories.reduce((max, m) => {
+      const idNum = parseInt(m.memoryID, 10);
+      return isNaN(idNum) ? max : Math.max(max, idNum);
+    }, 0);
+    const newId = (maxId + 1).toString();
+
+    const newMemory: Memory = {
+      memoryID: newId,
+      memoryName: newMemoryName,
+      content: newMemoryContent,
+    }
+    const updatedMemories = [...memories, newMemory]
+    setMemories(updatedMemories)
+    setShowAdd(false)
+    setNewMemoryName('')
+    setNewMemoryContent('')
   }
 
   return (
@@ -77,12 +94,38 @@ export function Memory() {
         </view>
       ))}
       <view className="AddMemoryButton" bindtap={handleAdd}>
-        {/* <text className="AddMemoryPlus">+</text> */}
         <image 
           src={addIcon}
           className='AddMemoryPlus'
         />
       </view>
+
+      {showAdd && (
+        <view className="AddMemoryModal">
+          <view>
+            <text>Memory name</text>
+            <input
+              value={newMemoryName}
+              bindinput={e => setNewMemoryName(e.detail.value)}
+            />
+          </view>
+          <view>
+            <text>Memory content</text>
+            <input
+              value={newMemoryContent}
+              bindinput={e => setNewMemoryContent(e.detail.value)}
+            />
+          </view>
+          <view className="ButtonRow">
+            <view bindtap={handleAddConfirm}>
+              <text>Add</text>
+            </view>
+            <view bindtap={() => setShowAdd(false)}>
+              <text>Cancel</text>
+            </view>
+          </view>
+        </view>
+      )}
     </view>
   )
 }

@@ -82,3 +82,68 @@
   cursor: pointer;
   opacity: 1;
 }
+
+.AddMemoryModal {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #f7faee;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  padding: 24px 20px;
+  z-index: 100;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.AddMemoryModal text {
+  font-size: 22px;
+  color: #222;
+  margin-bottom: 0px;
+  font-weight: 500;
+}
+
+.AddMemoryModal input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border: 1px solid #d2d7c7;
+  border-radius: 4px;
+  font-size: 16px;
+  background: #fff;
+  color: #222;
+  box-sizing: border-box;
+}
+
+.ButtonRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.ButtonRow view {
+  padding: 8px 18px;
+  border-radius: 6px;
+  background: #b7c6a4;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.ButtonRow view text {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.ButtonRow view:hover {
+  background: #a3b38a;
+}
