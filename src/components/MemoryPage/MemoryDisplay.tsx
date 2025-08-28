@@ -6,32 +6,21 @@ import ChevronDownIcon from '../../assets/chevrondown.png'
 
 import './MemoryDisplay.css'
 
-interface MemoryData {
-  id: string
-  title: string
-  content: string
-}
+import type { Memory, MemoryData } from '../../data/types.ts';
+import data from '../../data/memories.json' with { type: "json"};
 
-const initialMemories: MemoryData[] = [
-  {
-    id: 'default',
-    title: 'Default Memory',
-    content: `This is the default memory. You can edit or delete it.`,
-  },
-  { id: 'a', title: 'Memory A', content: '' },
-  { id: 'b', title: 'Memory B', content: '' },
-]
+const memoryData: Memory[] = data.memories;
 
 export function Memory() {
-  const [memories, setMemories] = useState<MemoryData[]>(initialMemories)
-  const [openId, setOpenId] = useState<string>('default')
+  const [memories, setMemories] = useState<Memory[]>(memoryData)
+  const [openId, setOpenId] = useState<string>(memoryData[0]?.memoryID || 'default')
 
   const handleToggle = (id: string) => {
     setOpenId(openId === id ? '' : id)
   }
 
   const handleDelete = (id: string) => {
-    setMemories(memories.filter(m => m.id !== id))
+    setMemories(memories.filter(m => m.memoryID !== id))
     if (openId === id) setOpenId('')
   }
 
@@ -44,37 +33,42 @@ export function Memory() {
     const newId = `mem${Date.now()}`
     setMemories([
       ...memories,
-      { id: newId, title: `Memory ${String.fromCharCode(65 + memories.length)}`, content: '' },
+      {
+        memoryID: newId,
+        memoryName: `Memory ${String.fromCharCode(65 + memories.length)}`,
+        content: '',
+      },
     ])
   }
 
   return (
     <view className="MemoryPage">
       {memories.map(memory => (
-        <view key={memory.id} className="MemoryItem">
+        <view key={memory.memoryID} className="MemoryItem">
           <view className="MemoryHeader">
             <text
               className="MemoryDropdown"
-              bindtap={() => handleToggle(memory.id)}
+              bindtap={() => handleToggle(memory.memoryID)}
             >
-              {openId === memory.id ? <image src={ChevronDownIcon} className='ChevronIcon' /> 
-                                    : <image src={ChevronRightIcon} className='ChevronIcon' />} 
-              {memory.title}
+              {openId === memory.memoryID 
+                ? <image src={ChevronDownIcon} className='ChevronIcon' /> 
+                : <image src={ChevronRightIcon} className='ChevronIcon' />} 
+              {memory.memoryName}
             </text>
             <view className="MemoryIcons">
               <image
                 src={editIcon}
                 className="MemoryIcon"
-                bindtap={() => handleEdit(memory.id)}
+                bindtap={() => handleEdit(memory.memoryID)}
               />
               <image
                 src={deleteIcon}
                 className="MemoryIcon"
-                bindtap={() => handleDelete(memory.id)}
+                bindtap={() => handleDelete(memory.memoryID)}
               />
             </view>
           </view>
-          {openId === memory.id && (
+          {openId === memory.memoryID && (
             <view className="MemoryContent">
               <text>{memory.content || 'No content.'}</text>
             </view>

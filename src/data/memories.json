@@ -1,0 +1,19 @@
+{
+  "memories": [
+    {
+      "memoryID": "default",
+      "memoryName": "Default Memory",
+      "content": "This is the default memory. It contains general information and serves as a starting point for new chats."
+    },
+    {
+      "memoryID": "memA",
+      "memoryName": "Project Ideas",
+      "content": "Brainstormed project ideas: AI chatbot, weather app, personal finance tracker. Discussed pros and cons for each."
+    },
+    {
+      "memoryID": "memB",
+      "memoryName": "Travel Plans",
+      "content": "Upcoming travel plans include visiting Japan in spring. Booked flights and hotels, created itinerary for Tokyo and Kyoto."
+    }
+  ]
+}
