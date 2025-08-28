@@ -4,7 +4,7 @@ import deleteIcon from '../../assets/delete.png'
 import ChevronRightIcon from '../../assets/chevronright.png'
 import ChevronDownIcon from '../../assets/chevrondown.png'
 
-import './Memory.css'
+import './MemoryDisplay.css'
 
 interface MemoryData {
   id: string
