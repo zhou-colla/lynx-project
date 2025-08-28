@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from '@lynx-js/react'
-import { useNavigate } from 'react-router'
 
 import './App.css'
 import arrow from './assets/arrow.png'
@@ -13,7 +12,6 @@ export function App(props: {
   const [alterLogo, setAlterLogo] = useState(false)
   const [response, setResponse] = useState('')
   const [message, setMessage] = useState('Hello Default Greeting')
-  const nav = useNavigate();
 
   useEffect(() => {
     console.info('Hello, ReactLynx')
@@ -61,7 +59,7 @@ export function App(props: {
             <view className='Button' bindtap={() => goToPage('chatdisplay')}>
               <text className='ButtonText'>Chat</text>
             </view>
-            <view className='Button' bindtap={() => goToPage('page2')}>
+            <view className='Button' bindtap={() => goToPage('memory')}>
               <text className='ButtonText'>Memory</text>
             </view>
             <view className='Button' bindtap={() => goToPage('page3')}>
@@ -99,13 +97,6 @@ export function App(props: {
         <view className='Response'>
           <text className='Response-Title'>Response:</text>
           <text className='Response-Message'>{response}</text>
-        </view>
-
-        <view
-          className='Memory'
-          bindtap={() => nav('/memory')}
-        >
-          <text>Memory</text>'
         </view>
 
         <view style={{ flex: 1 }} />
