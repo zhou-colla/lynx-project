@@ -65,8 +65,8 @@ export function App(props: {
             <view className='Button' bindtap={() => goToPage('page3')}>
               <text className='ButtonText'>Menu</text>
             </view>
-            <view className='Button' bindtap={() => goToPage('page4')}>
-              <text className='ButtonText'>Button 4</text>
+            <view className='Button' bindtap={() => goToPage('chatsession')}>
+              <text className='ButtonText'>Chat Session</text>
             </view>
           </view>
         </view>
@@ -86,18 +86,7 @@ export function App(props: {
           </text>
         </view>
 
-        {/* Send button */}
-        <view
-          className='send-button'
-          bindtap={onSend}
-        >
-          <text style={{ color: '#fff', fontSize: '20px' }}>Send</text>
-        </view>
 
-        <view className='Response'>
-          <text className='Response-Title'>Response:</text>
-          <text className='Response-Message'>{response}</text>
-        </view>
 
         <view style={{ flex: 1 }} />
       </view>
