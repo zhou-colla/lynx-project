@@ -1,12 +1,12 @@
 import { useState } from '@lynx-js/react'
-import editIcon from '../../assets/edit.png'
-import deleteIcon from '../../assets/delete.png'
-import ChevronRightIcon from '../../assets/chevronright.png'
-import ChevronDownIcon from '../../assets/chevrondown.png'
+import editIcon from '../../assets/edit-icon.png'
+import deleteIcon from '../../assets/delete-icon.png'
+import ChevronRightIcon from '../../assets/right-arrow.png'
+import ChevronDownIcon from '../../assets/down-arrow.png'
 
 import './MemoryDisplay.css'
 
-import type { Memory, MemoryData } from '../../data/types.ts';
+import type { Memory } from '../../data/types.ts';
 import data from '../../data/memories.json' with { type: "json"};
 
 const memoryData: Memory[] = data.memories;
