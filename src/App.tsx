@@ -7,7 +7,8 @@ import lynxLogo from './assets/lynx-logo.png'
 import reactLynxLogo from './assets/react-logo.png'
 
 export function App(props: {
-  onRender?: () => void
+  onRender?: () => void,
+  onNavigateTo: (pageName: string) => void
 }) {
   const [alterLogo, setAlterLogo] = useState(false)
   const [response, setResponse] = useState('')
@@ -40,6 +41,10 @@ export function App(props: {
     setAlterLogo(prevAlterLogo => !prevAlterLogo)
   }, [])
 
+  const goToPage = useCallback((pageName: string) => {
+    props.onNavigateTo(pageName);
+  }, [props.onNavigateTo]);
+
   return (
     <view>
       <view className='Background' />
@@ -52,6 +57,20 @@ export function App(props: {
           </view>
           <text className='Title'>React</text>
           <text className='Subtitle'>on Lynx</text>
+          <view className='ButtonContainer'>
+            <view className='Button' bindtap={() => goToPage('chatdisplay')}>
+              <text className='ButtonText'>Chat</text>
+            </view>
+            <view className='Button' bindtap={() => goToPage('page2')}>
+              <text className='ButtonText'>Memory</text>
+            </view>
+            <view className='Button' bindtap={() => goToPage('page3')}>
+              <text className='ButtonText'>Menu</text>
+            </view>
+            <view className='Button' bindtap={() => goToPage('page4')}>
+              <text className='ButtonText'>Button 4</text>
+            </view>
+          </view>
         </view>
         <view className='Content'>
           <image src={arrow} className='Arrow' />
@@ -74,7 +93,7 @@ export function App(props: {
           className='send-button'
           bindtap={onSend}
         >
-          <text style={{ color: '#fff', fontSize: 20 }}>Send</text>
+          <text style={{ color: '#fff', fontSize: '20px' }}>Send</text>
         </view>
 
         <view className='Response'>

@@ -1,17 +1,24 @@
-import { root } from '@lynx-js/react';
-import { MemoryRouter, Routes, Route } from 'react-router';
+import { useState } from '@lynx-js/react'
+import '@lynx-js/react/debug'
+import { root } from '@lynx-js/react'
 
-import { App } from './App.js';
-import { Memory } from './components/memory/memory.js'
+import { App } from './App.jsx'
+import { ChatDisplay } from './components/ChatPage/ChatDisplay.jsx'
 
-root.render(
-  <MemoryRouter>
-    <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/memory" element={<Memory />} />
-    </Routes>
-  </MemoryRouter>,
-);
+function MainApp() {
+  const [currentPage, setCurrentPage] = useState('home');
+  
+  if (currentPage === 'home') {
+    return <App onNavigateTo={setCurrentPage} />;
+  } else if (currentPage === 'chatdisplay') {
+    return <ChatDisplay chatID="chat-1" />;
+  }
+
+  return <view><text>404 Page Not Found</text></view>;
+}
+
+
+root.render(<MainApp />);
 
 if (import.meta.webpackHot) {
   import.meta.webpackHot.accept();
