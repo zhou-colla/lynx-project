@@ -3,6 +3,7 @@ import editIcon from '../../assets/edit-icon.png'
 import deleteIcon from '../../assets/delete-icon.png'
 import ChevronRightIcon from '../../assets/right-arrow.png'
 import ChevronDownIcon from '../../assets/down-arrow.png'
+import addIcon from '../../assets/add-icon.png'
 
 import './MemoryDisplay.css'
 
@@ -76,7 +77,11 @@ export function Memory() {
         </view>
       ))}
       <view className="AddMemoryButton" bindtap={handleAdd}>
-        <text className="AddMemoryPlus">+</text>
+        {/* <text className="AddMemoryPlus">+</text> */}
+        <image 
+          src={addIcon}
+          className='AddMemoryPlus'
+        />
       </view>
     </view>
   )

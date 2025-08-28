@@ -77,10 +77,8 @@
 }
 
 .AddMemoryPlus {
-  font-size: 52px;
-  color: #fff;
-  font-weight: 400;
-  line-height: 48px;
-  text-align: center;
-  display: block;
+  width: 52px;
+  height: 52px;
+  cursor: pointer;
+  opacity: 1;
 }
