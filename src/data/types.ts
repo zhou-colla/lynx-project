@@ -25,6 +25,7 @@ export interface Memory {
   content: string;
 }
 
+// Define the structure of the entire memoryData object
 export interface MemoryData {
   memories: Memory[];
 }
