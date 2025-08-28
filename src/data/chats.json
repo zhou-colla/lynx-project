@@ -1,0 +1,55 @@
+{
+  "chats": [
+    {
+      "chatID": "chat-1",
+      "chatName": "Asking Capital",
+      "memoryID": "mem-abcde",
+      "messages": [
+        {
+          "messageID": "msg-001",
+          "role": "user",
+          "text": "What is the capital of France?"
+        },
+        {
+          "messageID": "msg-002",
+          "role": "assistant",
+          "text": "The capital of France is Paris."
+        },
+        {
+          "messageID": "msg-003",
+          "role": "user",
+          "text": "What is the capital of German?"
+        },
+        {
+          "messageID": "msg-004",
+          "role": "assistant",
+          "text": "The capital of German is Berlin."
+        }
+      ]
+    },
+    {
+      "chatID": "chat-2",
+      "chatName": "Asking Language",
+      "memoryID": "mem-fghij",
+      "messages": [
+        {
+          "messageID": "msg-001",
+          "role": "user",
+          "text": "What is the language of Indonesia?"
+        },
+        {
+          "messageID": "msg-002",
+          "role": "assistant",
+          "text": "The language of Indonesia is Indonesian."
+        }
+      ]
+    },
+    {
+      "chatID": "chat-3",
+      "chatName": "Project X Discussion",
+      "memoryID": "mem-fghij",
+      "messages": [
+      ]
+    }
+  ]
+}
