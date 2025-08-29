@@ -3,7 +3,9 @@ import ChatHistory from './ChatHistory.js';
 import { GEMINI_API_KEY } from "../../Env.js";
 import './ChatSession.css'
 
-const chatHistory = new ChatHistory(1, 'Untitled Chat');
+new ChatHistory(1, "title");
+
+const chatHistory = await ChatHistory.loadFromFirebase(1, "title")
 
 export function ChatSession() {  
   const [response, setResponse] = useState('')
