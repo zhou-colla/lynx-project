@@ -9,5 +9,13 @@ declare module "@lynx-js/types" {
       placeholder?: string;
       className?: string; // ✅ add this
     };
+    textarea?: {
+      bindinput?: (e: { type: "input"; detail: { value: string } }) => void;
+      value?: string | undefined;
+      placeholder?: string;
+      className?: string;
+      rows?: number;
+      // style?: string | Lynx.CSSProperties;
+    };
   }
 }
