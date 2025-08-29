@@ -1,136 +1,145 @@
 .menu-container {
-    width: 260px;
-    height: 100%;
-    background: #f9fafb;
-    border-right: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
-    font-family: sans-serif;
-    overflow-y: auto;
-  }
-  
-  .menu-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .menu-title {
-    font-weight: bold;
-    font-size: 16px;
-  }
-  
-  .close-btn {
-    cursor: pointer;
-    font-size: 18px;
-  }
-  
-  .menu-actions {
-    padding: 12px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .menu-action {
-    cursor: pointer;
-    padding: 6px 10px;
-    border-radius: 6px;
-    background: #e5e7eb;
-    font-size: 14px;
-  }
-  
-  .menu-action:hover {
-    background: #d1d5db;
-  }
-  
-  .menu-section {
-    padding: 12px 16px;
-  }
-  
-  .section-title {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #374151;
-  }
-  
-  /* Folders */
-  .folder {
-    margin-bottom: 8px;
-  }
-  .folder-header {
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    color: #111827;
-  }
-  .folder-chats {
-    padding-left: 12px;
-    margin-top: 4px;
-  }
-  .chat-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 4px 0;
-    font-size: 13px;
-  }
-  .chat-options {
-    cursor: pointer;
-    font-size: 14px;
-    color: #6b7280;
-  }
-  .empty-text {
-    font-size: 12px;
-    color: #9ca3af;
-    margin-top: 2px;
-  }
-  
-  /* Memories */
-  .memory-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 6px 10px;
-    margin-bottom: 8px;
-    background: #fff;
-  }
-  .memory-header {
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-  }
-  .memory-icons {
-    display: flex;
-    gap: 6px;
-    font-size: 14px;
-  }
-  .memory-icons .delete {
-    color: #ef4444;
-    cursor: pointer;
-  }
-  .memory-content {
-    font-size: 13px;
-    margin-top: 4px;
-    color: #4b5563;
-    display: block;
-  }
-  
-  .add-memory {
-    cursor: pointer;
-    padding: 6px 10px;
-    text-align: center;
-    border-radius: 6px;
-    background: #e5e7eb;
-    font-size: 14px;
-  }
-  .add-memory:hover {
-    background: #d1d5db;
-  }
-  
+  width: 260px;
+  height: 100%;
+  background: #f9fafb;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+  overflow-y: auto;
+}
+
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ddd;
+}
+
+.menu-title {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.close-btn {
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.menu-actions {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-action {
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #e5e7eb;
+  font-size: 14px;
+}
+
+.menu-action:hover {
+  background: #d1d5db;
+}
+
+.menu-section {
+  padding: 12px 16px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+/* Folders */
+.folder {
+  margin-bottom: 8px;
+}
+
+.folder-header {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.folder-chats {
+  padding-left: 12px;
+  margin-top: 4px;
+}
+
+.chat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 13px;
+}
+
+.chat-options {
+  cursor: pointer;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.empty-text {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+/* Memories */
+.memory-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-bottom: 8px;
+  background: #fff;
+}
+
+.memory-header {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.memory-icons {
+  display: flex;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.memory-icons .delete {
+  color: #ef4444;
+  cursor: pointer;
+}
+
+.memory-content {
+  font-size: 13px;
+  margin-top: 4px;
+  color: #4b5563;
+  display: block;
+}
+
+.add-memory {
+  cursor: pointer;
+  padding: 6px 10px;
+  text-align: center;
+  border-radius: 6px;
+  background: #e5e7eb;
+  font-size: 14px;
+}
+
+.add-memory:hover {
+  background: #d1d5db;
+}

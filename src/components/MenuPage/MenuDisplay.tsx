@@ -4,18 +4,21 @@ import './MenuDisplay.css'
 export function MenuPage() {
   const [openFolder, setOpenFolder] = useState<string | null>(null)
   const [openMemory, setOpenMemory] = useState<string | null>('Default Memory')
-
-  const folders = [
+  
+  const [folders, setFolders] = useState([
     { name: 'Folder 1', chats: ['Chat 1', 'Chat 2'] },
     { name: 'Folder 2', chats: [] },
     { name: 'Folder 3', chats: ['Chat 3'] },
-  ]
+  ])
 
-  const memories = [
-    { name: 'Default Memory', content: 'Some default memory text...' },
-    { name: 'Memory A', content: 'Content for memory A' },
-    { name: 'Memory B', content: 'Content for memory B' },
-  ]
+  const handleCreateNewFolder = () => {
+    // Determine the next folder number by checking the current number of folders
+    const nextFolderNumber = folders.length + 1
+    const newFolderName = `Folder ${nextFolderNumber}`
+
+    // Add the new folder to the state
+    setFolders([...folders, { name: newFolderName, chats: [] }])
+  }
 
   return (
     <view className="menu-container">
@@ -25,14 +28,18 @@ export function MenuPage() {
         <view className="close-btn">✕</view>
       </view>
 
-      {/* New Chat + My Memory */}
+      {/* New Chat + My Memory + New Folder button */}
       <view className="menu-actions">
-        <view className="menu-action">＋ New Chat</view>
+        <view className="menu-action">＋ New chat</view>
         <view className="menu-action">🧠 My Memory</view>
+        <view className="menu-action" bindtap={handleCreateNewFolder}>
+          ＋ New Folder
+        </view>
       </view>
 
       {/* Chat Folders */}
       <view className="menu-section">
+        {/* The Chats title will now appear without an edit icon */}
         <text className="section-title">Chats</text>
         {folders.map((folder, idx) => (
           <view key={idx} className="folder">
@@ -61,29 +68,6 @@ export function MenuPage() {
             )}
           </view>
         ))}
-      </view>
-
-      {/* Memories */}
-      <view className="menu-section">
-        {memories.map((memory, idx) => (
-          <view key={idx} className="memory-card">
-            <view
-              className="memory-header"
-              bindtap={() =>
-                setOpenMemory(openMemory === memory.name ? null : memory.name)
-              }
-            >
-              <text>{memory.name}</text>
-              <view className="memory-icons">
-                ✏️ <text className="delete">🗑️</text>
-              </view>
-            </view>
-            {openMemory === memory.name && (
-              <text className="memory-content">{memory.content}</text>
-            )}
-          </view>
-        ))}
-        <view className="add-memory">＋ Add Memory</view>
       </view>
     </view>
   )
