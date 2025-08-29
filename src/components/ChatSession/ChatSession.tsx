@@ -1,8 +1,11 @@
 import { useCallback, useState } from '@lynx-js/react'
+import ChatHistory from './ChatHistory.js';
 import './ChatSession.css'
 
-export function ChatSession() {
-  const API_KEY = "AIzaSyBu3R-vB_iAydZhbQISSLCBCrrg5iyzf3U"
+const chatHistory = new ChatHistory();
+const API_KEY = "AIzaSyBu3R-vB_iAydZhbQISSLCBCrrg5iyzf3U"
+
+export function ChatSession() {  
   const [response, setResponse] = useState('')
   const [message, setMessage] = useState('')
   
@@ -13,6 +16,8 @@ const onSend = useCallback(async () => {
     return
   }
 
+  chatHistory.addUserMessage(message);
+
   try {
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
@@ -22,11 +27,7 @@ const onSend = useCallback(async () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          contents: [
-            {
-              parts: [{ text: message }], // <-- user message here
-            },
-          ],
+          contents: chatHistory.getHistory(),
         }),
       }
     )
@@ -34,10 +35,11 @@ const onSend = useCallback(async () => {
     const data = await res.json()
     console.log('Gemini raw response:', data)
 
-    
     const reply =
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
       'No response from Gemini'
+  
+    chatHistory.addModelMessage(reply);
 
     setResponse(reply)
     setMessage('') // Clear input
