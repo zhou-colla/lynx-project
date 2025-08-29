@@ -10,7 +10,7 @@ export interface ChatEntry {
 
 export default class ChatHistory {
   private history: ChatEntry[] = [];
-  private memory: Record<string, string> = {"1": "mood: happy"};
+  private memory: Record<string, string> = {"1": "mood: happy", "2": "name: xingye", "3": "home: Mars"};
 
   addUserMessage(message: string) {
     this.history.push({ role: 'user', parts: [{ text: message }] });
