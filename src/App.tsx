@@ -4,10 +4,10 @@ import './App.css'
 import arrow from './assets/arrow.png'
 import lynxLogo from './assets/lynx-logo.png'
 import reactLynxLogo from './assets/react-logo.png'
+import { useNavigation } from './components/NavigationContext.jsx';
 
 export function App(props: {
   onRender?: () => void,
-  onNavigateTo: (pageName: string) => void
 }) {
   const [alterLogo, setAlterLogo] = useState(false)
   const [response, setResponse] = useState('')
@@ -39,9 +39,10 @@ export function App(props: {
     setAlterLogo(prevAlterLogo => !prevAlterLogo)
   }, [])
 
+  const { setCurrentPage } = useNavigation();
   const goToPage = useCallback((pageName: string) => {
-    props.onNavigateTo(pageName);
-  }, [props.onNavigateTo]);
+    setCurrentPage(pageName);
+  }, [setCurrentPage]);
 
   return (
     <view>

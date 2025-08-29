@@ -1,0 +1,16 @@
+.safe-area-wrapper {
+  /* Common styles for both iOS and Android */
+  box-sizing: border-box;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 50px;
+
+  /* Apply padding only if env() is supported (iOS) */
+  @supports (padding-top: env(safe-area-inset-top)) {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
