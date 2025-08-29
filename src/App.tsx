@@ -62,7 +62,7 @@ export function App(props: {
             <view className='Button' bindtap={() => goToPage('memory')}>
               <text className='ButtonText'>Memory</text>
             </view>
-            <view className='Button' bindtap={() => goToPage('page3')}>
+            <view className='Button' bindtap={() => goToPage('menudisplay')}>
               <text className='ButtonText'>Menu</text>
             </view>
             <view className='Button' bindtap={() => goToPage('chatsession')}>
