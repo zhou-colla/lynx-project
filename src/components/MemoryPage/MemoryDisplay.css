@@ -85,6 +85,7 @@
 
 .AddMemoryModal {
   position: fixed;
+  width: 90vw;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -116,6 +117,23 @@
   background: #fff;
   color: #222;
   box-sizing: border-box;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.AddMemoryModal textarea {
+  width: 100%;
+  min-height: 60px;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  font-size: 16px;
+  border: 1px solid #d2d7c7;
+  border-radius: 4px;
+  background: #fff;
+  color: #222;
+  margin-bottom: 12px;
+  word-break: normal;
+  white-space: pre-wrap;
 }
 
 .ButtonRow {
