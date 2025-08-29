@@ -11,12 +11,6 @@ export function MenuPage() {
     { name: 'Folder 3', chats: ['Chat 3'] },
   ]
 
-  const memories = [
-    { name: 'Default Memory', content: 'Some default memory text...' },
-    { name: 'Memory A', content: 'Content for memory A' },
-    { name: 'Memory B', content: 'Content for memory B' },
-  ]
-
   return (
     <view className="menu-container">
       {/* Header */}
@@ -61,29 +55,6 @@ export function MenuPage() {
             )}
           </view>
         ))}
-      </view>
-
-      {/* Memories */}
-      <view className="menu-section">
-        {memories.map((memory, idx) => (
-          <view key={idx} className="memory-card">
-            <view
-              className="memory-header"
-              bindtap={() =>
-                setOpenMemory(openMemory === memory.name ? null : memory.name)
-              }
-            >
-              <text>{memory.name}</text>
-              <view className="memory-icons">
-                ✏️ <text className="delete">🗑️</text>
-              </view>
-            </view>
-            {openMemory === memory.name && (
-              <text className="memory-content">{memory.content}</text>
-            )}
-          </view>
-        ))}
-        <view className="add-memory">＋ Add Memory</view>
       </view>
     </view>
   )
