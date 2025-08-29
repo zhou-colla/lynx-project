@@ -50,10 +50,10 @@
 }
 
 .ChevronIcon {
-  width: 18px;
-  height: 18px;
-  margin-right: 2px;
-  opacity: 0.7;
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  opacity: 1;
 }
 
 .MemoryContent {
@@ -71,17 +71,97 @@
   border-radius: 24px;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 48px;
+  height: 52px;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .AddMemoryPlus {
-  font-size: 52px;
+  width: 52px;
+  height: 52px;
+  cursor: pointer;
+  opacity: 1;
+}
+
+.AddMemoryModal {
+  position: fixed;
+  width: 90vw;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #f7faee;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  padding: 24px 20px;
+  z-index: 100;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.AddMemoryModal text {
+  font-size: 22px;
+  color: #222;
+  margin-bottom: 0px;
+  font-weight: 500;
+}
+
+.AddMemoryModal input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border: 1px solid #d2d7c7;
+  border-radius: 4px;
+  font-size: 16px;
+  background: #fff;
+  color: #222;
+  box-sizing: border-box;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.AddMemoryModal textarea {
+  width: 100%;
+  min-height: 60px;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  font-size: 16px;
+  border: 1px solid #d2d7c7;
+  border-radius: 4px;
+  background: #fff;
+  color: #222;
+  margin-bottom: 12px;
+  word-break: normal;
+  white-space: pre-wrap;
+}
+
+.ButtonRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.ButtonRow view {
+  padding: 8px 18px;
+  border-radius: 6px;
+  background: #b7c6a4;
   color: #fff;
-  font-weight: 400;
-  line-height: 48px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
   text-align: center;
-  display: block;
+  transition: background 0.2s;
+}
+
+.ButtonRow view text {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.ButtonRow view:hover {
+  background: #a3b38a;
 }
