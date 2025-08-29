@@ -1,6 +1,7 @@
 import { useState } from '@lynx-js/react'
 import '@lynx-js/react/debug'
 import { root } from '@lynx-js/react'
+import type { ReactNode } from '@lynx-js/react';
 
 import { NavigationProvider } from './components/NavigationContext.jsx';
 import { useNavigation } from './components/NavigationContext.jsx';
@@ -10,6 +11,16 @@ import { ChatDisplay } from './components/ChatPage/ChatDisplay.jsx'
 import { Memory } from './components/MemoryPage/MemoryDisplay.js'
 import { ChatSession } from './components/ChatSession/ChatSession.jsx'
 import { MenuPage } from './components/MenuPage/MenuDisplay.jsx'
+
+import './index.css'
+
+function SafeAreaWrapper({ children }: { children: ReactNode }) {
+  return (
+    <view className="safe-area-wrapper">
+      {children}
+    </view>
+  );
+}
 
 function MainApp() {
   // Use the hook to get the state from the NavigationProvider
@@ -34,9 +45,12 @@ function MainApp() {
 
 root.render(
   <NavigationProvider>
-    <MainApp />
+    <SafeAreaWrapper>
+      <MainApp />
+    </SafeAreaWrapper>
   </NavigationProvider>
 );
+
 
 
 if (import.meta.webpackHot) {
