@@ -1,4 +1,4 @@
-import { useState } from '@lynx-js/react'
+import { useState, useEffect } from '@lynx-js/react'
 
 import editIcon from '../../assets/edit-icon.png'
 import deleteIcon from '../../assets/delete-icon.png'
@@ -9,20 +9,66 @@ import addIcon from '../../assets/add-icon.png'
 import './MemoryDisplay.css'
 
 import type { Memory } from '../../data/types.ts';
-import data from '../../data/memories.json' with { type: "json"};
 import { MemoryModal } from './MemoryModal.js'
 
-const memoryData: Memory[] = data.memories;
+import { FIREBASE_DB } from '../../Env.js'
+
+const defaultMemory = {
+  memoryID: '0',
+  memoryName: 'Default Memory',
+  content: 'This is the default memory content.',
+};
 
 export function Memory() {
-  const [memories, setMemories] = useState<Memory[]>(memoryData)
-  const [openId, setOpenId] = useState<string>(memoryData[0]?.memoryID || 'default')
+  const [memories, setMemories] = useState<Memory[]>([])
+  const [openId, setOpenId] = useState<string | undefined>()
 
   const [showAdd, setShowAdd] = useState(false)
   const [showEdit, setShowEdit] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
 
-  
+  const [loading, setLoading] = useState(true);
+
+  // load memories from firebase on component mount
+  const loadFromFirebase = async () => {
+    setLoading(true);
+
+    let loadedMemories: Memory[] = [];
+    let index = 1;
+    let emptyCount = 0;
+
+    while (true) {
+      const res = await fetch(`${FIREBASE_DB}/memories/${index}.json`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      });
+
+      if (!res.ok) break; // Stop if not found or error
+
+      const memory = await res.json();
+      if (!memory || Object.keys(memory).length === 0) {
+        emptyCount++;
+        if (emptyCount > 3) break; // Stop after 3 empty responses
+        index++;
+        continue
+      }
+
+      loadedMemories.push(memory);
+      index++;
+    }
+
+    if (loadedMemories.length > 0) {
+      setMemories(loadedMemories);
+    } else {
+      setMemories([defaultMemory]);
+    }
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    loadFromFirebase();
+  }, []);
+
   const handleToggle = (id: string) => {
     setOpenId(openId === id ? '' : id)
   }
@@ -32,7 +78,7 @@ export function Memory() {
     setShowAdd(true)
   }
 
-  const handleAddConfirm = (name: string, content: string) => {
+  const handleAddConfirm = async(name: string, content: string) => {
     if (!name.trim()) return
 
     // Find the highest existing integer ID and increment by 1
@@ -49,6 +95,13 @@ export function Memory() {
     }
     setMemories([...memories, newMemory])
     setShowAdd(false)
+
+    // save to db each time a new memory is created
+    await fetch(`${FIREBASE_DB}/memories/${newMemory.memoryID}.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newMemory),
+    });
   }
 
   // Edit memory logic using modal
@@ -57,16 +110,30 @@ export function Memory() {
     setShowEdit(true)
   }
 
-  const handleEditConfirm = (name: string, content: string) => {
-    if (!editId || !name.trim()) return
+  const handleEditConfirm = async (name: string, content: string) => {
+  if (!editId || !name.trim()) return
+
+    const updatedMemory: Memory = {
+      memoryID: editId,
+      memoryName: name,
+      content: content,
+    };
+
     setMemories(memories.map(m =>
       m.memoryID === editId
-        ? { ...m, memoryName: name, content: content }
+        ? updatedMemory
         : m
-    ))
-    setShowEdit(false)
-    setEditId(null)
-  }
+    ));
+    setShowEdit(false);
+    setEditId(null);
+
+    // save to db each time a memory is edited
+    await fetch(`${FIREBASE_DB}/memories/${editId}.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedMemory),
+    });
+}
 
   const handleEditCancel = () => {
     setShowEdit(false)
@@ -74,11 +141,16 @@ export function Memory() {
   }
 
   // Delete memory
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     setMemories(memories.filter(m => m.memoryID !== id))
     if (openId === id) setOpenId('')
-  }
 
+    // delete from db each time a memory is deleted
+    await fetch(`${FIREBASE_DB}/memories/${id}.json`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 
   return (
     <view className="MemoryPage">
@@ -114,6 +186,8 @@ export function Memory() {
           )}
         </view>
       ))}
+
+      {/* Add Memory Button */}
       <view className="AddMemoryButton" bindtap={handleAdd}>
         <image 
           src={addIcon}
