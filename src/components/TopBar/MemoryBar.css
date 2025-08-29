@@ -1,21 +1,86 @@
-/* MemoryBar.css */
-.memory-bar {
+.memory-bar-wrapper {
   position: absolute;
-  top: 10px;
+  top: 12px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  background-color: rgba(255, 255, 255, 0.3);
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 10px;
-  min-width: 150px;
-  display: flex; /* Makes the container a flexbox */
-  align-items: center; /* Vertically centers the items */
-  gap: 8px; /* Adds space between the image and the text */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 180px; /* Fixed width */
 }
 
-.ChevronIcon {
-  width: 20px; /* Adjust the size of the icon as needed */
-  height: 20px;
+.memory-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.2);
+  /*border: 1px solid #ddd;*/
+  border-radius: 12px;
+  padding: 10px;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chevron-icon {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+}
+
+.memory-bar-text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.memory-count {
+  font-size: 12px;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.memory-list-container {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.memory-list {
+  width: 100%;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.memory-list-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  min-height: 20px;
+
+}
+
+.memory-list-item:active {
+  background-color: #f8f9fa;
+}
+
+.memory-list-item:last-child {
+  border-bottom: none;
+}
+
+.memory-list-text {
+  color: #333;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
 }
