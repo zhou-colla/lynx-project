@@ -10,6 +10,7 @@ import './MemoryDisplay.css'
 
 import type { Memory } from '../../data/types.ts';
 import { MemoryModal } from './MemoryModal.js'
+import { NavBar } from '../TopBar/NavBar.js'
 
 import { FIREBASE_DB } from '../../Env.js'
 
@@ -153,67 +154,70 @@ export function Memory() {
   }
 
   return (
-    <view className="MemoryPage">
-      {memories.map(memory => (
-        <view key={memory.memoryID} className="MemoryItem">
-          <view className="MemoryHeader">
-            <text
-              className="MemoryDropdown"
-              bindtap={() => handleToggle(memory.memoryID)}
-            >
-              {openId === memory.memoryID 
-                ? <image src={ChevronDownIcon} className='ChevronIcon' /> 
-                : <image src={ChevronRightIcon} className='ChevronIcon' />} 
-              {memory.memoryName}
-            </text>
-            <view className="MemoryIcons">
-              <image
-                src={editIcon}
-                className="MemoryIcon"
-                bindtap={() => handleEdit(memory.memoryID)}
-              />
-              <image
-                src={deleteIcon}
-                className="MemoryIcon"
-                bindtap={() => handleDelete(memory.memoryID)}
-              />
+    <view>
+      <NavBar />
+      <view className="MemoryPage">
+        {memories.map(memory => (
+          <view key={memory.memoryID} className="MemoryItem">
+            <view className="MemoryHeader">
+              <text
+                className="MemoryDropdown"
+                bindtap={() => handleToggle(memory.memoryID)}
+              >
+                {openId === memory.memoryID 
+                  ? <image src={ChevronDownIcon} className='ChevronIcon' /> 
+                  : <image src={ChevronRightIcon} className='ChevronIcon' />} 
+                {memory.memoryName}
+              </text>
+              <view className="MemoryIcons">
+                <image
+                  src={editIcon}
+                  className="MemoryIcon"
+                  bindtap={() => handleEdit(memory.memoryID)}
+                />
+                <image
+                  src={deleteIcon}
+                  className="MemoryIcon"
+                  bindtap={() => handleDelete(memory.memoryID)}
+                />
+              </view>
             </view>
+            {openId === memory.memoryID && (
+              <view className="MemoryContent">
+                <text>{memory.content || 'No content.'}</text>
+              </view>
+            )}
           </view>
-          {openId === memory.memoryID && (
-            <view className="MemoryContent">
-              <text>{memory.content || 'No content.'}</text>
-            </view>
-          )}
+        ))}
+
+        {/* Add Memory Button */}
+        <view className="AddMemoryButton" bindtap={handleAdd}>
+          <image 
+            src={addIcon}
+            className='AddMemoryPlus'
+          />
         </view>
-      ))}
 
-      {/* Add Memory Button */}
-      <view className="AddMemoryButton" bindtap={handleAdd}>
-        <image 
-          src={addIcon}
-          className='AddMemoryPlus'
-        />
+        {/* Add Modal */}
+        {showAdd && (
+          <MemoryModal
+            title="Add Memory"
+            onConfirm={handleAddConfirm}
+            onCancel={() => setShowAdd(false)}
+          />
+        )}
+
+        {/* Edit Modal */}
+        {showEdit && (
+          <MemoryModal
+            title="Edit Memory"
+            initialName={memories.find(m => m.memoryID === editId)?.memoryName}
+            initialContent={memories.find(m => m.memoryID === editId)?.content}
+            onConfirm={handleEditConfirm}
+            onCancel={handleEditCancel}
+          />
+        )}
       </view>
-
-      {/* Add Modal */}
-      {showAdd && (
-        <MemoryModal
-          title="Add Memory"
-          onConfirm={handleAddConfirm}
-          onCancel={() => setShowAdd(false)}
-        />
-      )}
-
-      {/* Edit Modal */}
-      {showEdit && (
-        <MemoryModal
-          title="Edit Memory"
-          initialName={memories.find(m => m.memoryID === editId)?.memoryName}
-          initialContent={memories.find(m => m.memoryID === editId)?.content}
-          onConfirm={handleEditConfirm}
-          onCancel={handleEditCancel}
-        />
-      )}
     </view>
   )
 }
