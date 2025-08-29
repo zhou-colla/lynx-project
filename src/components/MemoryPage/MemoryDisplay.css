@@ -117,7 +117,6 @@
   background: #fff;
   color: #222;
   box-sizing: border-box;
-  word-break: break-word;
   white-space: pre-wrap;
 }
 
@@ -132,7 +131,6 @@
   background: #fff;
   color: #222;
   margin-bottom: 12px;
-  word-break: normal;
   white-space: pre-wrap;
 }
 
