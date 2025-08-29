@@ -10,7 +10,7 @@ export interface ChatEntry {
 
 export default class ChatHistory {
   private history: ChatEntry[] = [];
-  private memory: Record<string, string> = {};
+  private memory: Record<string, string> = {"1": "mood: happy"};
 
   addUserMessage(message: string) {
     this.history.push({ role: 'user', parts: [{ text: message }] });
@@ -18,10 +18,6 @@ export default class ChatHistory {
 
   addModelMessage(message: string) {
     this.history.push({ role: 'model', parts: [{ text: message }] });
-  }
-
-  getHistory(): ChatEntry[] {
-    return this.history;
   }
 
   getLastMessage(): ChatEntry | null {
@@ -44,4 +40,17 @@ export default class ChatHistory {
   clearMemory() {
     this.memory = {};
   }
+
+getHistory(): ChatEntry[] {
+  const memoryEntries: ChatEntry[] = Object.entries(this.memory).map(
+    ([key, value]) => ({
+      role: 'user',
+      parts: [{ text: `${key}: ${value}` }],
+    })
+  );
+
+  return [...memoryEntries, ...this.history];
+}
+
+
 }
