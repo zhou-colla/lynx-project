@@ -1,3 +1,6 @@
+import { db } from "./firebase.js";
+import { ref, set, get, child } from "firebase/database";
+
 // ChatHistory.ts
 export interface ChatPart {
   text: string;
@@ -9,6 +12,15 @@ export interface ChatEntry {
 }
 
 export default class ChatHistory {
+
+
+  constructor(chatid: number, chattitle: string) {
+    this.chatid = chatid;
+    this.chattitle = chattitle;
+  }
+
+  private chatid: number = -1;
+  private chattitle: string = '';
   private history: ChatEntry[] = [];
   private memory: Record<string, string> = {"1": "mood: happy", "2": "name: xingye", "3": "home: Mars"};
 
@@ -41,16 +53,47 @@ export default class ChatHistory {
     this.memory = {};
   }
 
-getHistory(): ChatEntry[] {
-  const memoryEntries: ChatEntry[] = Object.entries(this.memory).map(
-    ([key, value]) => ({
-      role: 'user',
-      parts: [{ text: `${key}: ${value}` }],
-    })
-  );
+
+  getHistory(): ChatEntry[] {
+    return this.history;
+  }
+
+  getMemory(): Record<string, string> {
+    return this.memory;
+  }
+
+  getPrompt(): ChatEntry[] {
+    const memoryEntries: ChatEntry[] = Object.entries(this.memory).map(
+      ([key, value]) => ({
+        role: 'user',
+        parts: [{ text: `${key}: ${value}` }],
+      })
+    );
 
   return [...memoryEntries, ...this.history];
-}
+  }
+
+    // 🔹 Save chat + memory to Firebase
+  async saveToFirebase() {
+    const chatRef = ref(db, `chats/${this.chatid}`);
+    await set(chatRef, {
+      history: this.history,
+      memory: this.memory,
+    });
+  }
+
+  // 🔹 Load chat + memory from Firebase
+  async loadFromFirebase() {
+    const chatRef = ref(db);
+    const snapshot = await get(child(chatRef, `chats/${this.chatid}`));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      this.history = data.history || [];
+      this.memory = data.memory || {};
+    } else {
+      console.log("No data found for chat:", this.chatid);
+    }
+  }
 
 
 }
