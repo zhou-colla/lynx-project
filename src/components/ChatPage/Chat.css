@@ -1,3 +1,20 @@
+.dialog-display-and-input {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 100px); /* adjust depending on NavBar + MemoryBar size */
+}
+
+.dialog-display {
+  flex: 1;                /* take remaining height */
+  overflow-y: auto;       /* scroll vertically */
+  background-color: #f9f9f9;
+  padding: 8px;
+}
+
+.dialog-list-item {
+  margin-bottom: 8px;
+}
+
 .assistant-bubble {
   background: #eee;
   border-radius: 16px;

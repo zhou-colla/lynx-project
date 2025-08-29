@@ -19,7 +19,7 @@ const chatData: ChatData = data;
 export function ChatDisplay(props: { chatID: string }) {
   const [messages, setMessages] = useState<ChatEntry[]>([]);
   const [memoryID, setMemoryID] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingChatHistory, setIsLoadingChatHistory] = useState(true);
 
   useEffect(() => {
     const fetchChatHistory = async () => {
@@ -30,40 +30,56 @@ export function ChatDisplay(props: { chatID: string }) {
         const history = chatInstance.getHistory();
         setMessages(history);
 
-        // Optionally set memoryID from static chat data
-        const chat: Chat | undefined = chatData.chats.find((c: Chat) => c.chatID === props.chatID);
+        // Optionally set memoryID from static chat data (isn't this compulsory?)
+        const chat: Chat | undefined = chatData.chats.find((c: Chat) => c.chatID === props.chatID); 
         if (chat) setMemoryID(chat.memoryID);
       } catch (err) {
         console.error("Failed to load chat history:", err);
         setMessages([]);
       } finally {
-        setIsLoading(false);
+        setIsLoadingChatHistory(false);
       }
     };
 
     fetchChatHistory();
   }, [props.chatID]);
 
-  if (isLoading) {
-    return <text>Loading chat history...</text>;
-  }
+  if (isLoadingChatHistory) {
+    return <text className="centered-text">Loading chat history...</text>;
+  } // newly added
 
+  const lastIndex : number = (messages.length)-1
+ 
   return (
     <view>
       <NavBar />
       <MemoryBar memoryID={memoryID} setMemoryID={setMemoryID} />
-      <view className="chat-display">
+      <view className="dialog-display-and-input">
+        <list 
+        className="dialog-display"
+        scroll-orientation="vertical"
+        initial-scroll-index={lastIndex}
+      >
         {messages.length === 0 ? (
-          <text className="centered-text">What can I help with</text>
+          <list-item item-key="empty">
+            <text className="centered-text">What can I help with</text>
+          </list-item>
         ) : (
-          messages.map((msg: ChatEntry, index) =>
-            msg.role === "user" ? (
-              <UserChatBubble key={index} text={msg.parts[0].text} />
-            ) : (
-              <AssistantChatBubble key={index} text={msg.parts[0].text} />
-            )
-          )
+          messages.map((msg: ChatEntry, index) => (
+            <list-item 
+              key={index}
+              item-key={index.toString()}
+              className="dialog-list-item"
+            >
+              {msg.role === "user" ? (
+                <UserChatBubble text={msg.parts[0].text} />
+              ) : (
+                <AssistantChatBubble text={msg.parts[0].text} />
+              )}
+            </list-item>
+          ))
         )}
+      </list>
       </view>
     </view>
   );
