@@ -16,11 +16,9 @@
 }
 
 .assistant-bubble {
-  background: #eee;
-  border-radius: 16px;
-  padding: 8px 12px;
+  padding: 12px 12px;
   margin: 4px 0;
-  max-width: 70%;
+  max-width: 100%;
 }
 
 .user-bubble {
