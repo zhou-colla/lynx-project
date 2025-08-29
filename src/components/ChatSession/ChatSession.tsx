@@ -2,7 +2,7 @@ import { useCallback, useState } from '@lynx-js/react'
 import ChatHistory from './ChatHistory.js';
 import './ChatSession.css'
 
-const chatHistory = new ChatHistory();
+const chatHistory = new ChatHistory(1, 'dummychat');
 const API_KEY = "AIzaSyBu3R-vB_iAydZhbQISSLCBCrrg5iyzf3U"
 
 export function ChatSession() {  
@@ -40,6 +40,7 @@ const onSend = useCallback(async () => {
       'No response from Gemini'
   
     chatHistory.addModelMessage(reply);
+    chatHistory.saveToFirebase();
 
     setResponse(reply)
     setMessage('') // Clear input
