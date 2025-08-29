@@ -15,9 +15,15 @@ const memoryData: Memory[] = data.memories;
 export function Memory() {
   const [memories, setMemories] = useState<Memory[]>(memoryData)
   const [openId, setOpenId] = useState<string>(memoryData[0]?.memoryID || 'default')
+
   const [showAdd, setShowAdd] = useState(false)
   const [newMemoryName, setNewMemoryName] = useState('')
   const [newMemoryContent, setNewMemoryContent] = useState('')
+
+  const [showEdit, setShowEdit] = useState(false)
+  const [editId, setEditId] = useState<string | null>(null)
+  const [editMemoryName, setEditMemoryName] = useState('')
+  const [editMemoryContent, setEditMemoryContent] = useState('')
 
   const handleToggle = (id: string) => {
     setOpenId(openId === id ? '' : id)
@@ -28,11 +34,7 @@ export function Memory() {
     if (openId === id) setOpenId('')
   }
 
-  const handleEdit = (id: string) => {
-    // Implement your edit logic here (e.g. open modal)
-    alert(`Edit memory: ${id}`)
-  }
-
+  // Logic for adding memories
   const handleAdd = () => {
     setShowAdd(true)
   }
@@ -57,6 +59,38 @@ export function Memory() {
     setShowAdd(false)
     setNewMemoryName('')
     setNewMemoryContent('')
+  }
+
+
+  // Logic for editing memories
+  const handleEdit = (id: string) => {
+    const memory = memories.find(m => m.memoryID === id)
+    if (memory) {
+      setEditId(id)
+      setEditMemoryName(memory.memoryName)
+      setEditMemoryContent(memory.content)
+      setShowEdit(true)
+    }
+  }
+
+  const handleEditConfirm = () => {
+    if (!editId || !editMemoryName.trim()) return
+    setMemories(memories.map(m =>
+      m.memoryID === editId
+        ? { ...m, memoryName: editMemoryName, content: editMemoryContent }
+        : m
+    ))
+    setShowEdit(false)
+    setEditId(null)
+    setEditMemoryName('')
+    setEditMemoryContent('')
+  }
+
+  const handleEditCancel = () => {
+    setShowEdit(false)
+    setEditId(null)
+    setEditMemoryName('')
+    setEditMemoryContent('')
   }
 
   return (
@@ -100,6 +134,7 @@ export function Memory() {
         />
       </view>
 
+      {/* Adding Modal */}
       {showAdd && (
         <view className="AddMemoryModal">
           <view>
@@ -121,6 +156,36 @@ export function Memory() {
               <text>Add</text>
             </view>
             <view bindtap={() => setShowAdd(false)}>
+              <text>Cancel</text>
+            </view>
+          </view>
+        </view>
+      )}
+
+      {/* Editing Modal */}
+      {showEdit && (
+        <view className="AddMemoryModal">
+          <view>
+            <text>Edit memory name</text>
+            <text>{editMemoryName}</text>
+            <input
+              value={editMemoryName}
+              bindinput={e => setEditMemoryName(e.detail.value)}
+            />
+          </view>
+          <view>
+            <text>Edit memory content</text>
+            <text>{editMemoryContent}</text>
+            <input
+              value={editMemoryContent}
+              bindinput={e => setEditMemoryContent(e.detail.value)}
+            />
+          </view>
+          <view className="ButtonRow">
+            <view bindtap={handleEditConfirm}>
+              <text>Confirm</text>
+            </view>
+            <view bindtap={handleEditCancel}>
               <text>Cancel</text>
             </view>
           </view>
