@@ -29,6 +29,7 @@ export function Memory() {
     setOpenId(openId === id ? '' : id)
   }
 
+  // Logic for deleting memories
   const handleDelete = (id: string) => {
     setMemories(memories.filter(m => m.memoryID !== id))
     if (openId === id) setOpenId('')
