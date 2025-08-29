@@ -1,0 +1,28 @@
+.nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #385542; /* A dark color to ensure visibility */
+  height: 60px; /* Or sufficient padding */
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 10px 10px 10px; 
+}
+
+.left-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+}
+
+.right-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+}

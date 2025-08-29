@@ -15,7 +15,6 @@ test('App', async () => {
       onRender={() => {
         cb(`__MAIN_THREAD__: ${__MAIN_THREAD__}`)
       }}
-      onNavigateTo={() => {}}
     />,
   )
   expect(cb).toBeCalledTimes(1)
