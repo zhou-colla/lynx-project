@@ -1,5 +1,3 @@
-import { db } from "./firebase.js";
-import { ref, set, get, child } from "firebase/database";
 import { FIREBASE_DB } from "../../Env.js";
 
 
