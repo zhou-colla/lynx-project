@@ -7,9 +7,22 @@
   padding: calc(env(safe-area-inset-top, 0px) + 10px) 10px 10px 10px; 
 }
 
-.left-icon, .right-icon {
+.left-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
   width: 30px;
   height: 30px;
+}
+
+.right-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   cursor: pointer;
-  display: block;
+  width: 30px;
+  height: 30px;
 }

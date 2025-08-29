@@ -16,7 +16,7 @@ export function NavBar() {
   return (
     <view className="nav-bar">
       <image src={menuIcon} className="left-icon" bindtap={()=> setCurrentPage('menudisplay')} />
-      <image src={addIconCircle} className="right-icon" bindtap={handleClick}/>
+      <image src={addIconCircle} className="right-icon" bindtap={()=> setCurrentPage('menudisplay')}/>
     </view>
   );
 }
