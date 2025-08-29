@@ -14,10 +14,12 @@ export interface ChatEntry {
 
 export default class ChatHistory {
 
-
-  constructor(chatid: number, chattitle: string) {
+  constructor(chatid: number, chattitle: string = "Untitled Chat", history: ChatEntry[] = [], memory: Record<string, string> = {}) {
     this.chatid = chatid;
     this.chattitle = chattitle;
+    this.history = history;
+    this.memory = memory;
+    this.saveTitleIdToFirebase();
   }
 
   private chatid: number = -1;
@@ -74,6 +76,26 @@ export default class ChatHistory {
   return [...memoryEntries, ...this.history];
   }
 
+  async saveGlobalCounter(count: number) {
+    const res = await fetch(`${FIREBASE_DB}/global_counter.json`, {
+      method: 'PUT', // PUT overwrites the value
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(count),
+    });
+
+    if (!res.ok) {
+      console.error('Failed to save global counter', await res.text());
+    }
+  }
+
+  async saveTitleIdToFirebase() {
+    await fetch(`${FIREBASE_DB}/menu/${this.chatid}.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: this.chattitle }),
+    });
+  }
+
   async saveToFirebase() {
     await fetch(`${FIREBASE_DB}/chats/${this.chatid}.json`, {
       method: "PUT",
@@ -82,16 +104,38 @@ export default class ChatHistory {
     });
   }
 
-  async loadFromFirebase() {
-    const res = await fetch(`${FIREBASE_DB}/chats/${this.chatid}.json`);
+  static async loadFromFirebase(chatid: number, title: string):Promise<ChatHistory> {
+    const res = await fetch(`${FIREBASE_DB}/chats/${chatid}.json`);
     if (res.ok) {
       const data = await res.json();
-      this.history = data.history || [];
-      this.memory = data.memory || {};
+      const history = data.history || [];
+      const memory = data.memory || {};
+      return new ChatHistory(chatid, title, history, memory);
     } else {
-      console.log("No data found for chat:", this.chatid);
+      console.log("No data found for chat:", chatid);
+      return new ChatHistory(chatid, title);
     }
   }
+
+  // // Add this method inside your ChatHistory class
+  // static async getGlobalCounter(): Promise<number> {
+  //   try {
+  //     const res = await fetch(`${FIREBASE_DB}/global_counter.json`);
+      
+  //     // Handle Firebase's "null" response for non-existing data
+  //     if (res.status === 200) {
+  //       const data = await res.json();
+  //       return data === null ? 0 : data;
+  //     }
+      
+  //     // Handle actual errors (404, network issues, etc)
+  //     console.error('Failed to fetch global counter', res.status, await res.text());
+  //     return 0;
+  //   } catch (error) {
+  //     console.error('Network error fetching global counter', error);
+  //     return 0;
+  //   }
+  // }
 
 
 }
