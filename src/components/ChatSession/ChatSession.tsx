@@ -1,6 +1,7 @@
 import { useCallback, useState } from '@lynx-js/react'
 import ChatHistory from './ChatHistory.js';
 import { GEMINI_API_KEY } from "../../Env.js";
+import './ChatSession.css'
 
 const chatHistory = new ChatHistory(1, 'dummychat');
 
@@ -39,6 +40,7 @@ const onSend = useCallback(async () => {
       'No response from Gemini'
   
     chatHistory.addModelMessage(reply);
+    chatHistory.saveToFirebase();
 
     setResponse(reply)
     setMessage('') // Clear input
