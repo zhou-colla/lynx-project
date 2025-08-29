@@ -19,6 +19,7 @@ export default class ChatHistory {
     this.chattitle = chattitle;
     this.history = history;
     this.memory = memory;
+    this.saveTitleIdToFirebase();
   }
 
   private chatid: number = -1;
@@ -103,7 +104,7 @@ export default class ChatHistory {
     });
   }
 
-  static async loadFromFirebase(chatid: number, title: string) {
+  static async loadFromFirebase(chatid: number, title: string):Promise<ChatHistory> {
     const res = await fetch(`${FIREBASE_DB}/chats/${chatid}.json`);
     if (res.ok) {
       const data = await res.json();
@@ -112,6 +113,7 @@ export default class ChatHistory {
       return new ChatHistory(chatid, title, history, memory);
     } else {
       console.log("No data found for chat:", chatid);
+      return new ChatHistory(chatid, title);
     }
   }
 
