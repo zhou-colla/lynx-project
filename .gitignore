@@ -7,6 +7,9 @@
 node_modules
 dist/
 
+# src
+src/Env.tsx
+
 # IDE
 .vscode/*
 !.vscode/extensions.json
