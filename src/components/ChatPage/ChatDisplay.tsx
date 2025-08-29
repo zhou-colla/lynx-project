@@ -1,5 +1,6 @@
 // ChatDisplay.tsx
 import { useEffect, useState } from '@lynx-js/react'
+import type { Dispatch, SetStateAction } from '@lynx-js/react';
 import { UserChatBubble } from './UserChatBubble.js'
 import { AssistantChatBubble } from './AssistantChatBubble.js'
 import { NavBar } from '../TopBar/NavBar.js'

@@ -4,9 +4,10 @@ import './NavBar.css';
 import addIconCircle from '../../assets/add-icon-circle.png'
 import menuIcon from '../../assets/menu-icon.png'
 
+import { useNavigation } from '../NavigationContext.jsx';
+
 export function NavBar() {
-  // This state is internal to NavBar and only controls the overlay's visibility
-  const [showMemoryOptions, setShowMemoryOptions] = useState(false);
+  const { setCurrentPage } = useNavigation();
 
   const handleClick = () => {
     alert(`Check`)
@@ -14,7 +15,7 @@ export function NavBar() {
 
   return (
     <view className="nav-bar">
-      <view bindtap={handleClick}>
+      <view bindtap={()=> setCurrentPage('menudisplay')}>
         <image src={menuIcon} className="left-icon" />
       </view>
       <view bindtap={handleClick}>
@@ -23,14 +24,3 @@ export function NavBar() {
     </view>
   );
 }
-
-    //   {/* The MemoryBar is rendered as a child but its CSS makes it appear as an overlay */}
-    //   {showMemoryOptions && (
-    //     <MemoryBar
-    //       onSelectMemory={(memory) => {
-    //         onMemoryChange(memory);
-    //         setShowMemoryOptions(false);
-    //       }}
-    //       onClose={() => setShowMemoryOptions(false)}
-    //     />
-    //   )}
