@@ -20,6 +20,8 @@ export function ChatDisplay(props: { chatID: string }) {
   const [messages, setMessages] = useState<ChatEntry[]>([]);
   const [memoryID, setMemoryID] = useState("");
   const [isLoadingChatHistory, setIsLoadingChatHistory] = useState(true);
+  const [isReplying, setIsReplying] = useState(false)
+  const [replyMessageText, setReplyMessageText] = useState("");
 
   useEffect(() => {
     const fetchChatHistory = async () => {
@@ -74,12 +76,21 @@ export function ChatDisplay(props: { chatID: string }) {
               {msg.role === "user" ? (
                 <UserChatBubble text={msg.parts[0].text} />
               ) : (
-                <AssistantChatBubble text={msg.parts[0].text} />
+                <AssistantChatBubble 
+                  text={msg.parts[0].text} 
+                  setIsReplying={setIsReplying} 
+                  setReplyMessageText={setReplyMessageText}/>
               )}
             </list-item>
           ))
         )}
-      </list>
+        </list>
+        {/* When isReplying show this*/}
+        <text className="optional-text">{replyMessageText}</text>
+        <view className="input-box-container">
+          <text>inputbox</text>
+          {/* ... input components go here, e.g., <text-input> */}
+        </view>
       </view>
     </view>
   );

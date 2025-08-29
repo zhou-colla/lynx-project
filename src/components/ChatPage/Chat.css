@@ -1,12 +1,12 @@
 .dialog-display-and-input {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 100px); /* adjust depending on NavBar + MemoryBar size */
+  height: calc(100vh - 100px); /* 保持这个高度计算，但要确保它能看到所有元素 */
 }
 
 .dialog-display {
-  flex: 1;                /* take remaining height */
-  overflow-y: auto;       /* scroll vertically */
+  flex-grow: 1; /* 确保它能占据剩余空间 */
+  overflow-y: auto;
   background-color: #f9f9f9;
   padding: 8px;
 }
@@ -15,10 +15,32 @@
   margin-bottom: 8px;
 }
 
+.optional-text {
+  flex-shrink: 0;
+  color: black; 
+  background-color: #BEDFE4;
+  padding: 8px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.input-box-container {
+  flex-shrink: 0;
+  height: 50px;
+  padding: 10px;
+  background-color: white;
+}
+
 .assistant-bubble {
   padding: 12px 12px;
   margin: 4px 0;
   max-width: 100%;
+}
+
+.reply-icon {
+  width: 25px;
+  height: 25px;
+  margin: 4px 0;
 }
 
 .user-bubble {
