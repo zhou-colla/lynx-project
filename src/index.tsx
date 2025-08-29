@@ -6,6 +6,7 @@ import { App } from './App.jsx'
 import { ChatDisplay } from './components/ChatPage/ChatDisplay.jsx'
 import { Memory } from './components/MemoryPage/MemoryDisplay.js'
 import { ChatSession } from './components/ChatSession/ChatSession.jsx'
+import { MenuPage } from './components/MenuPage/MenuDisplay.jsx'
 
 function MainApp() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -18,6 +19,8 @@ function MainApp() {
     return <Memory />;
   }else if (currentPage === 'chatsession') {
     return <ChatSession />;
+  } else if (currentPage === 'menudisplay') {
+    return <MenuPage />;
   }
 
   return <view><text>404 Page Not Found</text></view>;
