@@ -2,29 +2,49 @@ import { useCallback, useState } from '@lynx-js/react'
 import './ChatSession.css'
 
 export function ChatSession() {
+  const API_KEY = "AIzaSyBu3R-vB_iAydZhbQISSLCBCrrg5iyzf3U"
   const [response, setResponse] = useState('')
   const [message, setMessage] = useState('')
   
-  const onSend = useCallback(async () => {
-    if (!message.trim()) {
-      setResponse('Warning: Empty messages are not allowed')
-      return
-    }
-    
-    try {
-      const res = await fetch('https://postman-echo.com/post', {
+
+const onSend = useCallback(async () => {
+  if (!message.trim()) {
+    setResponse('Warning: Empty messages are not allowed')
+    return
+  }
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+      {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ msg: message }),
-      })
-      const data = await res.json()
-      setResponse(data.json?.msg || 'No echo response')
-      // Clear input after sending
-      setMessage('')
-    } catch (err) {
-      setResponse('Error: ' + (err as Error).message)
-    }
-  }, [message])
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [{ text: message }], // <-- user message here
+            },
+          ],
+        }),
+      }
+    )
+
+    const data = await res.json()
+    console.log('Gemini raw response:', data)
+
+    
+    const reply =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      'No response from Gemini'
+
+    setResponse(reply)
+    setMessage('') // Clear input
+  } catch (err) {
+    setResponse('Error: ' + (err as Error).message)
+  }
+}, [message])
 
   return (
     <view className="chat-container">
