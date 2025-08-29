@@ -1,3 +1,7 @@
+import { FIREBASE_DB } from "../../Env.js";
+
+
+
 // ChatHistory.ts
 export interface ChatPart {
   text: string;
@@ -9,8 +13,17 @@ export interface ChatEntry {
 }
 
 export default class ChatHistory {
+
+
+  constructor(chatid: number, chattitle: string) {
+    this.chatid = chatid;
+    this.chattitle = chattitle;
+  }
+
+  private chatid: number = -1;
+  private chattitle: string = '';
   private history: ChatEntry[] = [];
-  private memory: Record<string, string> = {"1": "mood: happy", "2": "name: xingye", "3": "home: Mars"};
+  private memory: Record<string, string> = {"1": "[This is for your background information, you do not have to explcily reply it] mood: happy, name: xingye, home: Mars"};
 
   addUserMessage(message: string) {
     this.history.push({ role: 'user', parts: [{ text: message }] });
@@ -30,7 +43,7 @@ export default class ChatHistory {
 
   //   Memory Management
   setMemory(key: string, value: string) {
-    this.memory[key] = value;
+    this.memory[key] = "[This is for your background information, you do not have to explcily reply it] " + value;
   }
 
   deleteMemory(key: string) {
@@ -41,16 +54,45 @@ export default class ChatHistory {
     this.memory = {};
   }
 
-getHistory(): ChatEntry[] {
-  const memoryEntries: ChatEntry[] = Object.entries(this.memory).map(
-    ([key, value]) => ({
-      role: 'user',
-      parts: [{ text: `${key}: ${value}` }],
-    })
-  );
+
+  getHistory(): ChatEntry[] {
+    return this.history;
+  }
+
+  getMemory(): Record<string, string> {
+    return this.memory;
+  }
+
+  getPrompt(): ChatEntry[] {
+    const memoryEntries: ChatEntry[] = Object.entries(this.memory).map(
+      ([key, value]) => ({
+        role: 'user',
+        parts: [{ text: `${key}: ${value}` }],
+      })
+    );
 
   return [...memoryEntries, ...this.history];
-}
+  }
+
+  async saveToFirebase() {
+    await fetch(`${FIREBASE_DB}/chats/${this.chatid}.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ history: this.history, memory: this.memory }),
+    });
+  }
+
+  async loadFromFirebase() {
+    const res = await fetch(`${FIREBASE_DB}/chats/${this.chatid}.json`);
+    if (res.ok) {
+      const data = await res.json();
+      this.history = data.history || [];
+      this.memory = data.memory || {};
+    } else {
+      console.log("No data found for chat:", this.chatid);
+    }
+  }
 
 
 }
+

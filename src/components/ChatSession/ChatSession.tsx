@@ -1,9 +1,9 @@
 import { useCallback, useState } from '@lynx-js/react'
 import ChatHistory from './ChatHistory.js';
+import { GEMINI_API_KEY } from "../../Env.js";
 import './ChatSession.css'
 
-const chatHistory = new ChatHistory();
-const API_KEY = "AIzaSyBu3R-vB_iAydZhbQISSLCBCrrg5iyzf3U"
+const chatHistory = new ChatHistory(1, 'dummychat');
 
 export function ChatSession() {  
   const [response, setResponse] = useState('')
@@ -20,7 +20,7 @@ const onSend = useCallback(async () => {
 
   try {
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: {
@@ -40,6 +40,7 @@ const onSend = useCallback(async () => {
       'No response from Gemini'
   
     chatHistory.addModelMessage(reply);
+    chatHistory.saveToFirebase();
 
     setResponse(reply)
     setMessage('') // Clear input
