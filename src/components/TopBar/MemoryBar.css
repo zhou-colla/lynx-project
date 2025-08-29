@@ -1,0 +1,21 @@
+/* MemoryBar.css */
+.memory-bar {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.3);
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  min-width: 150px;
+  display: flex; /* Makes the container a flexbox */
+  align-items: center; /* Vertically centers the items */
+  gap: 8px; /* Adds space between the image and the text */
+}
+
+.ChevronIcon {
+  width: 20px; /* Adjust the size of the icon as needed */
+  height: 20px;
+}

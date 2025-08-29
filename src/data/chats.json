@@ -3,7 +3,7 @@
     {
       "chatID": "chat-1",
       "chatName": "Asking Capital",
-      "memoryID": "mem-abcde",
+      "memoryID": "memB",
       "messages": [
         {
           "messageID": "msg-001",
@@ -30,7 +30,7 @@
     {
       "chatID": "chat-2",
       "chatName": "Asking Language",
-      "memoryID": "mem-fghij",
+      "memoryID": "default",
       "messages": [
         {
           "messageID": "msg-001",
