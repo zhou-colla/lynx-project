@@ -10,7 +10,7 @@ const memoryData: Memory[] = data.memories;
 
 export function MemoryBar(props: { memoryID: string, setMemoryID: Dispatch<SetStateAction<string>> }) {
   const [currentMemoryName, setCurrentMemoryName] = useState("")
-  const [expand, setExpand] = useState(false) // Start collapsed by default
+  const [expand, setExpand] = useState(false)
 
   const handleToggleExpand = () => {
     setExpand(!expand)
@@ -35,26 +35,34 @@ export function MemoryBar(props: { memoryID: string, setMemoryID: Dispatch<SetSt
           src={expand ? ChevronDownIcon : ChevronRightIcon} 
           className='chevron-icon' 
         />
-        <text style={{ color: 'white' }}>{currentMemoryName}</text>
+        <text className='memory-bar-text'>{currentMemoryName}</text>
       </view>
       
       {expand && (
-        <view className='memory-list-container'>
-          <view className='memory-list'>
-            {memoryData.map((memory) => (
-              <view 
+        <list 
+          scroll-orientation="vertical"
+          className='memory-list'
+        >
+          {memoryData.map((memory, index) => {
+            const isCurrentMemory = (memory.memoryID == props.memoryID);
+            
+            return (
+              <list-item 
                 key={memory.memoryID}
-                className='memory-list-item'
+                item-key={memory.memoryID}
+                className={`memory-list-item ${isCurrentMemory ? 'current-memory' : ''}`}
                 bindtap={() => {
                   props.setMemoryID(memory.memoryID);
                   setExpand(false);
                 }}
               >
-                <text className='memory-list-text'>{memory.memoryName}</text>
-              </view>
-            ))}
-          </view>
-        </view>
+                <text className='memory-list-text'>
+                  {memory.memoryName}
+                </text>
+              </list-item>
+            );
+          })}
+        </list>
       )}
     </view>
   );
