@@ -3,7 +3,7 @@ import ChatHistory from './ChatHistory.js';
 import { GEMINI_API_KEY } from "../../Env.js";
 import './ChatSession.css'
 
-const chatHistory = new ChatHistory(1, 'dummychat');
+const chatHistory = new ChatHistory(1, 'Untitled Chat');
 
 export function ChatSession() {  
   const [response, setResponse] = useState('')
