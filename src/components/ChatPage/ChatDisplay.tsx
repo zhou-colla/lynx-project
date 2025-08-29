@@ -5,6 +5,7 @@ import { UserChatBubble } from './UserChatBubble.js';
 import { AssistantChatBubble } from './AssistantChatBubble.js';
 import { NavBar } from '../TopBar/NavBar.js';
 import { MemoryBar } from '../TopBar/MemoryBar.js';
+import CrossIcon from '../../assets/cross-icon.png'
 import './Chat.css';
 
 // Import chat session
@@ -20,8 +21,9 @@ export function ChatDisplay(props: { chatID: string }) {
   const [messages, setMessages] = useState<ChatEntry[]>([]);
   const [memoryID, setMemoryID] = useState("");
   const [isLoadingChatHistory, setIsLoadingChatHistory] = useState(true);
-  const [isReplying, setIsReplying] = useState(false)
+  const [isReplying, setIsReplying] = useState(false);
   const [replyMessageText, setReplyMessageText] = useState("");
+  const [input, setInput] = useState('Ask me any question');
 
   useEffect(() => {
     const fetchChatHistory = async () => {
@@ -85,11 +87,26 @@ export function ChatDisplay(props: { chatID: string }) {
           ))
         )}
         </list>
-        {/* When isReplying show this*/}
-        <text className="optional-text">{replyMessageText}</text>
+        {/* Let the optional text only show the first five line and scrollable*/}
+        {isReplying && (
+          <view className="optional-reply-bar">
+            <text className="optional-text">{replyMessageText}</text>
+            <image 
+              src={CrossIcon} 
+              className="close-reply-icon"
+              bindtap={() => {
+                setIsReplying(false);
+                setReplyMessageText("");
+              }}
+            />
+          </view>
+        )}
         <view className="input-box-container">
-          <text>inputbox</text>
-          {/* ... input components go here, e.g., <text-input> */}
+          <input
+            value={input}
+            placeholder={input}
+            bindinput={e => setInput(e.detail.value)}
+          />
         </view>
       </view>
     </view>

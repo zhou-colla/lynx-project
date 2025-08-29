@@ -1,11 +1,11 @@
 .dialog-display-and-input {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 100px); /* 保持这个高度计算，但要确保它能看到所有元素 */
+  height: calc(100vh - 100px); 
 }
 
 .dialog-display {
-  flex-grow: 1; /* 确保它能占据剩余空间 */
+  flex-grow: 1;
   overflow-y: auto;
   background-color: #f9f9f9;
   padding: 8px;
@@ -15,13 +15,29 @@
   margin-bottom: 8px;
 }
 
-.optional-text {
+.optional-reply-bar {
   flex-shrink: 0;
-  color: black; 
+  display: flex;
   background-color: #BEDFE4;
   padding: 8px;
-  text-align: center;
+  gap: 8px;
+}
+
+.optional-text {
+  flex: 1;
+  max-height: calc(20px * 5);
+  overflow-y: auto;
   font-size: 14px;
+  color: black;
+  line-height: 20px;
+  white-space: pre-wrap;
+}
+
+.close-reply-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  cursor: pointer;
 }
 
 .input-box-container {
