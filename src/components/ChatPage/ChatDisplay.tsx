@@ -25,6 +25,7 @@ export function ChatDisplay(props: { chatID: string }) {
     const fetchChatHistory = async () => {
       try {
         // Load chat from Firebase
+        // To Sirui: If you wanna test it change 1 below to chatID
         const chatInstance = await ChatHistory.loadFromFirebase(1, "title");
         const history = chatInstance.getHistory();
         setMessages(history);
