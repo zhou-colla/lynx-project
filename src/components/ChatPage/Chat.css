@@ -6,7 +6,6 @@
 
 .dialog-display {
   flex-grow: 1;
-  overflow-y: auto;
   background-color: #f9f9f9;
   padding: 8px;
 }
@@ -26,7 +25,6 @@
 .optional-text {
   flex: 1;
   max-height: calc(20px * 5);
-  overflow-y: auto;
   font-size: 14px;
   color: black;
   line-height: 20px;
