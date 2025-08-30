@@ -7,7 +7,7 @@ import menuIcon from '../../assets/menu-icon.png'
 import { useNavigation } from '../NavigationContext.jsx';
 
 export function NavBar() {
-  const { setCurrentPage } = useNavigation();
+  const { setCurrentPage, openMenu } = useNavigation();
 
   const handleClick = () => {
     alert(`Check`)
@@ -15,7 +15,7 @@ export function NavBar() {
 
   return (
     <view className="nav-bar">
-      <image src={menuIcon} className="left-icon" bindtap={()=> setCurrentPage('menudisplay')} />
+      <image src={menuIcon} className="left-icon" bindtap={openMenu} />
       <image src={addIconCircle} className="right-icon" bindtap={()=> setCurrentPage('createchat')}/>
     </view>
   );
