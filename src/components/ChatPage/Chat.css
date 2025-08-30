@@ -1,7 +1,14 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Make the container fill the entire viewport height */
+}
+
 .dialog-display-and-input {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 100px); 
+  /*justify-content: flex-end;*/
+  flex-grow: 1;
 }
 
 .dialog-display {
@@ -38,10 +45,35 @@
 }
 
 .input-box-container {
+  /* This is a flex container, so it can control the alignment of its children */
+  display: flex;
   flex-shrink: 0;
   height: 50px;
-  padding: 10px;
+  padding: 5px 20px; /* increase the 20px here for iPhone */
   background-color: white;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-box-container input {
+  flex-grow: 1;
+  height: 40px;
+}
+
+.input-box-container .send-button {
+  background-color: #385542;;
+  padding: 0 5px;
+  height: 35px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+}
+
+.input-box-container .send-button-text {
+  white-space: nowrap;
+  color: white;
 }
 
 .assistant-bubble {
@@ -77,13 +109,4 @@
   align-self: center;
   /* Optional: Add a top margin for spacing */
   margin-top: 50px; 
-}
-
-.send-button {
-  padding: 0 15px;
-  background-color: #000000;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }

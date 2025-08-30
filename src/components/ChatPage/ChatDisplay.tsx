@@ -1,11 +1,11 @@
 // ChatDisplay.tsx
-import { useEffect, useState, useCallback } from '@lynx-js/react';
+import { useEffect, useState, useCallback, useLynxGlobalEventListener } from '@lynx-js/react';
 import type { Dispatch, SetStateAction } from '@lynx-js/react';
 import { UserChatBubble } from './UserChatBubble.js';
 import { AssistantChatBubble } from './AssistantChatBubble.js';
 import { NavBar } from '../TopBar/NavBar.js';
 import { MemoryBar } from '../TopBar/MemoryBar.js';
-import CrossIcon from '../../assets/cross-icon.png'
+import CrossIcon from '../../assets/cross-icon.png';
 import { GEMINI_API_KEY } from "../../Env.js";
 import './Chat.css';
 
@@ -27,6 +27,14 @@ export function ChatDisplay(props: { chatID: string }) {
   const [chatInstance, setChatInstance] = useState<ChatHistory | null>(null);
   const [message, setMessage] = useState('');
   const [placeholder, setPlaceholder] = useState('Ask me any question');
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useLynxGlobalEventListener(
+    "keyboardstatuschanged",
+    (status, height) => {
+      setKeyboardHeight(status === "on" ? height : 0);
+    }
+  );
 
   useEffect(() => {
     const fetchChatHistory = async () => {
@@ -79,7 +87,7 @@ export function ChatDisplay(props: { chatID: string }) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            contents: chatInstance.getHistory(),
+            contents: chatInstance.getPrompt(),
           }),
         }
       );
@@ -102,12 +110,16 @@ export function ChatDisplay(props: { chatID: string }) {
     }
   }, [chatInstance, message, isLoadingChatHistory]);
 
-
+  // 100px is for NavBar
   return (
-    <view>
+    <view className="page-container">
       <NavBar />
       <MemoryBar memoryID={memoryID} setMemoryID={setMemoryID} />
-      <view className="dialog-display-and-input">
+      <view className="dialog-display-and-input"
+        style={{
+          marginBottom: `${keyboardHeight}px`
+        }}
+      >
         <list
           className="dialog-display"
           scroll-orientation="vertical"
@@ -129,6 +141,7 @@ export function ChatDisplay(props: { chatID: string }) {
                 ) : (
                   <AssistantChatBubble
                     text={msg.parts[0].text}
+                    chatInstance={chatInstance}
                     setIsReplying={setIsReplying}
                     setReplyMessageText={setReplyMessageText} />
                 )}
@@ -139,13 +152,17 @@ export function ChatDisplay(props: { chatID: string }) {
         {/* Let the optional text only show the first five line and scrollable*/}
         {isReplying && (
           <view className="optional-reply-bar">
-            <text className="optional-text">{replyMessageText}</text>
+            <scroll-view className="optional-text">
+              <text>{replyMessageText}</text>
+            </scroll-view>
             <image
               src={CrossIcon}
               className="close-reply-icon"
               bindtap={() => {
                 setIsReplying(false);
                 setReplyMessageText("");
+                chatInstance?.setReplying(false);
+
               }}
             />
           </view>
@@ -153,7 +170,7 @@ export function ChatDisplay(props: { chatID: string }) {
         <view className="input-box-container">
           <input
             value={message}
-            placeholder={placeholder}   // if there’s an error, show it as placeholder
+            placeholder={placeholder}
             bindinput={e => setMessage(e.detail.value)}
           />
           <view
@@ -163,8 +180,6 @@ export function ChatDisplay(props: { chatID: string }) {
             <text className='send-button-text'>Send</text>
           </view>
         </view>
-
-
       </view>
     </view>
   );
