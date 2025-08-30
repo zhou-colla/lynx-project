@@ -78,7 +78,7 @@
 }
 
 .menu-actions {
-  padding: 12px 16px;
+  padding: 8px 8px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -88,12 +88,17 @@
 
 .menu-action {
   cursor: pointer;
-  padding: 8px 12px;
+  padding: 5px 12px;
   border-radius: 8px;
-  background: #e5e7eb;
   font-size: 15px;
   color: #374151;
   font-weight: 500;
+}
+
+.menu-action-button {
+  width: 35px; 
+  height: 35px; 
+  margin-right: 10px;
 }
 
 .menu-action:hover {
