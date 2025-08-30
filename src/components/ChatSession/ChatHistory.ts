@@ -1,7 +1,5 @@
 import { FIREBASE_DB } from "../../Env.js";
 
-
-
 // ChatHistory.ts
 export interface ChatPart {
   text: string;
@@ -13,8 +11,8 @@ export interface ChatEntry {
 }
 
 export default class ChatHistory {
-
   constructor(chatid: number, chattitle: string = "Untitled Chat", history: ChatEntry[] = [], memory: Record<string, string> = {}) {
+
     this.chatid = chatid;
     this.chattitle = chattitle;
     this.history = history;
@@ -43,6 +41,11 @@ export default class ChatHistory {
 
   addUserMessage(message: string) {
     this.history.push({ role: 'user', parts: [{ text: message }] });
+    
+    // Auto-generate title from first user message if title is default
+    if (this.chattitle === `Chat ${this.chatid}` || this.chattitle === 'dummychat') {
+      this.chattitle = message.length > 30 ? message.substring(0, 30) + '...' : message;
+    }
   }
 
   addModelMessage(message: string) {
@@ -70,7 +73,6 @@ export default class ChatHistory {
     this.memory = {};
   }
 
-
   getHistory(): ChatEntry[] {
     return this.history;
   }
@@ -86,6 +88,7 @@ export default class ChatHistory {
         parts: [{ text: `${key}: ${value}` }],
       })
     );
+
 
   if (this.isReplying) {
   return [...memoryEntries, ...this.history, this.replyMessage];
@@ -118,7 +121,11 @@ export default class ChatHistory {
     await fetch(`${FIREBASE_DB}/chats/${this.chatid}.json`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ history: this.history, memory: this.memory }),
+      body: JSON.stringify({ 
+        title: this.chattitle,
+        history: this.history, 
+        memory: this.memory 
+      }),
     });
   }
 
@@ -126,6 +133,7 @@ export default class ChatHistory {
     const res = await fetch(`${FIREBASE_DB}/chats/${chatid}.json`);
     if (res.ok) {
       const data = await res.json();
+
       const history = data.history || [];
       const memory = data.memory || {};
       return new ChatHistory(chatid, title, history, memory);
@@ -134,6 +142,7 @@ export default class ChatHistory {
       return new ChatHistory(chatid, title);
     }
   }
+
 
   // // Add this method inside your ChatHistory class
   // static async getGlobalCounter(): Promise<number> {
