@@ -3,7 +3,7 @@ import ChatHistory from './ChatHistory.js';
 import { GEMINI_API_KEY } from "../../Env.js";
 import './ChatSession.css';
 
-export function ChatSession() {  
+export function ChatSession() {
   const [response, setResponse] = useState('');
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState<ChatHistory | null>(null);
@@ -19,7 +19,12 @@ export function ChatSession() {
       } catch (error) {
         console.error("Failed to load chat history:", error);
         // Fallback to a local chat if Firebase fails
-        setChatHistory(new ChatHistory(1, "Local Fallback Chat"));
+        setChatHistory(new ChatHistory(1, "Local Fallback Chat", [],
+          {
+            memoryID: '1',
+            memoryName: 'Default Memory',
+            content: 'No memory found.',
+          }));
       } finally {
         setIsLoading(false);
       }
@@ -33,7 +38,7 @@ export function ChatSession() {
       setResponse('Chat is still loading, please wait...');
       return;
     }
-    
+
     if (!message.trim()) {
       setResponse('Warning: Empty messages are not allowed');
       return;
@@ -62,9 +67,9 @@ export function ChatSession() {
       const reply =
         data?.candidates?.[0]?.content?.parts?.[0]?.text ||
         'No response from Gemini';
-    
+
       chatHistory.addModelMessage(reply);
-      
+
       // Save to Firebase (properly await the promise)
       await chatHistory.saveToFirebase();
 
@@ -88,12 +93,12 @@ export function ChatSession() {
       <view className="chat-header">
         <text className="chat-title">Chat Session</text>
       </view>
-      
+
       <view className="response-area">
         <text className="response-label">Response:</text>
         <text className="response-message">{response}</text>
       </view>
-      
+
       <view className="input-container">
         <input
           className="chat-input"
@@ -101,7 +106,7 @@ export function ChatSession() {
           value={message}
           bindinput={(e: any) => setMessage(e.detail.value)}
         />
-        
+
         <view
           className="send-button"
           bindtap={onSend}

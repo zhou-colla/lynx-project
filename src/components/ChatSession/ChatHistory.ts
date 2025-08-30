@@ -1,4 +1,5 @@
 import { FIREBASE_DB } from "../../Env.js";
+import { defaultMemory } from "../MemoryPage/MemoryDisplay.js";
 import type { Memory } from '../../data/types.js';
 
 // ChatHistory.ts
@@ -98,6 +99,14 @@ export default class ChatHistory {
     return [...memoryEntries, ...this.history];
   }
 
+  getTitle(): string {
+    return this.chattitle;
+  }
+
+  setTitle(title: string) {
+    this.chattitle = title;
+  }
+
 
   static async saveGlobalCounter(count: number) {
     const res = await fetch(`${FIREBASE_DB}/global_counter.json`, {
@@ -141,7 +150,7 @@ export default class ChatHistory {
       return new ChatHistory(chatid, title, history, memory);
     } else {
       console.log("No data found for chat:", chatid);
-      return new ChatHistory(chatid, title);
+      return new ChatHistory(chatid, title, [], defaultMemory);
     }
   }
 
