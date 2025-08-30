@@ -1,11 +1,11 @@
 // ChatDisplay.tsx
-import { useEffect, useState, useCallback, useLynxGlobalEventListener } from '@lynx-js/react';
+import { useEffect, useState, useCallback } from '@lynx-js/react';
 import type { Dispatch, SetStateAction } from '@lynx-js/react';
 import { UserChatBubble } from './UserChatBubble.js';
 import { AssistantChatBubble } from './AssistantChatBubble.js';
 import { NavBar } from '../TopBar/NavBar.js';
 import { MemoryBar } from '../TopBar/MemoryBar.js';
-import CrossIcon from '../../assets/cross-icon.png';
+import CrossIcon from '../../assets/cross-icon.png'
 import { GEMINI_API_KEY } from "../../Env.js";
 import './Chat.css';
 
@@ -27,14 +27,6 @@ export function ChatDisplay(props: { chatID: string }) {
   const [chatInstance, setChatInstance] = useState<ChatHistory | null>(null);
   const [message, setMessage] = useState('');
   const [placeholder, setPlaceholder] = useState('Ask me any question');
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
-
-  useLynxGlobalEventListener(
-    "keyboardstatuschanged",
-    (status, height) => {
-      setKeyboardHeight(status === "on" ? height : 0);
-    }
-  );
 
 useEffect(() => {
   const fetchChatHistory = async () => {
@@ -109,16 +101,12 @@ useEffect(() => {
     }
   }, [chatInstance, message, isLoadingChatHistory]);
 
-  // 100px is for NavBar
+
   return (
-    <view className="page-container">
+    <view>
       <NavBar />
       <MemoryBar memoryID={memoryID} setMemoryID={setMemoryID} />
-      <view className="dialog-display-and-input" 
-        style={{
-        marginBottom: `${keyboardHeight}px`
-        }}
-      >
+      <view className="dialog-display-and-input">
         <list 
         className="dialog-display"
         scroll-orientation="vertical"
@@ -150,9 +138,7 @@ useEffect(() => {
         {/* Let the optional text only show the first five line and scrollable*/}
         {isReplying && (
           <view className="optional-reply-bar">
-            <scroll-view className="optional-text">
-              <text>{replyMessageText}</text>
-            </scroll-view>
+            <text className="optional-text">{replyMessageText}</text>
             <image 
               src={CrossIcon} 
               className="close-reply-icon"
@@ -166,7 +152,7 @@ useEffect(() => {
         <view className="input-box-container">
           <input
             value={message}
-            placeholder={placeholder}
+            placeholder={placeholder}   // if there’s an error, show it as placeholder
             bindinput={e => setMessage(e.detail.value)}
           />
           <view
@@ -176,6 +162,8 @@ useEffect(() => {
             <text className='send-button-text'>Send</text>
           </view>
         </view>
+
+        
       </view>
     </view>
   );
