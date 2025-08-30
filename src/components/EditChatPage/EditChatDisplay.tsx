@@ -133,8 +133,26 @@ export function EditChatDisplay({ folderID, chatID, chatTitle }: EditChatDisplay
     }
 
     const handleEditChat = async () => {
+        // If no folder was originally assigned, just add to the selected folder
+        if (!originalFolder && selectedFolder) {
+            // Add chat to selected folder
+            const folderRes = await fetch(`${FIREBASE_DB}/folders/${selectedFolder.folderID}.json`);
+            let folderData = await folderRes.json();
+            if (!folderData.chats) folderData.chats = [];
+            // Remove any existing chat with the same id (avoid duplicates)
+            folderData.chats = folderData.chats.filter((chat: any) => (chat.id ?? chat.chatid ?? '').toString() !== chatID);
+            folderData.chats.push({
+                id: chatID,
+                title: editedTitle,
+            });
+            await fetch(`${FIREBASE_DB}/folders/${selectedFolder.folderID}.json`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(folderData),
+            });
+        }
         // Remove chat from original folder if folder changed
-        if (selectedFolder && originalFolder && selectedFolder.folderID !== originalFolder.folderID) {
+        else if (selectedFolder && originalFolder && selectedFolder.folderID !== originalFolder.folderID) {
             // Remove chat from original folder
             const res = await fetch(`${FIREBASE_DB}/folders/${originalFolder.folderID}.json`);
             let folderData = await res.json();
