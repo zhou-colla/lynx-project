@@ -6,6 +6,8 @@ import { FIREBASE_DB } from '../../Env.js'
 import EditIcon from '../../assets/edit-icon.png';
 import DeleteIcon from '../../assets/delete-icon.png';
 
+import { MenuChat } from './MenuChat.js';
+
 import { useNavigation } from '../NavigationContext.jsx';
 
 interface ChatMetadata {
@@ -326,22 +328,7 @@ export function MenuPage() {
                   <text className="empty-text">No chats</text>
                 ) : (
                   folder.chats.map(chat => (
-                    <view key={chat.id} className="chat-item">
-                      <text>{chat.title}</text>
-                      <view className="chat-options">
-                        <view className="image-container">
-                          <image 
-                            src={EditIcon} 
-                            style={{ width: 60, height: 60, marginRight: 8}} 
-                            bindtap={() => {setCurrentPage("memory"); closeMenu()}} /* chat.id, chat.title, folder.id */
-                          />
-                          <image 
-                            src={DeleteIcon} 
-                            style={{ width: 60, height: 60 }} 
-                          />
-                        </view>
-                      </view>
-                    </view>
+                    <MenuChat chatID={chat.id} chatTitle={chat.title} folderId={folder.id} />
                   ))
                 )}
               </view>
@@ -356,22 +343,7 @@ export function MenuPage() {
               <text className="section-title">Unassigned Chats ({unassignedChats.length})</text>
             </view>
             {unassignedChats.map(chat => (
-              <view key={chat.id} className="chat-item">
-                <text>{chat.title}</text>
-                <view className="chat-options">
-                  <view className="image-container">
-                    <image 
-                      src={EditIcon} 
-                      style={{ width: 60, height: 60, marginRight: 8}} 
-                      bindtap={() => {setCurrentPage("memory"); closeMenu()}} /* chat.id, chat.title, folder.id */
-                    />
-                    <image 
-                      src={DeleteIcon} 
-                      style={{ width: 60, height: 60 }} 
-                    />
-                  </view>
-                </view>
-              </view>
+              <MenuChat chatID={chat.id} chatTitle={chat.title} folderId={-1} />
             ))}
           </view>
         )}
