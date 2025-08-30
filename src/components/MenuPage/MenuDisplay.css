@@ -4,17 +4,18 @@
 .chat-item,
 .dropdown-trigger,
 .dropdown-item,
-.add-folder {
+.edit-folder,
+.edit-dropdown-item {
   /* Increase touch target size */
   min-height: 44px;
   display: flex;
   align-items: center;
   /* Add subtle touch feedback */
   transition: all 0.15s ease;
-
 }
 
-.dropdown-item {
+.dropdown-item,
+.edit-dropdown-item {
   min-height: 36px; /* Slightly smaller for dropdown items */
 }
 
@@ -22,12 +23,14 @@
 .menu-action:active,
 .folder-header:active,
 .chat-item:active,
-.dropdown-trigger:active {
+.dropdown-trigger:active,
+.edit-folder:active {
   transform: scale(0.98);
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.dropdown-item:active {
+.dropdown-item:active,
+.edit-dropdown-item:active {
   background: #e5e7eb;
   transform: none; /* Don't scale dropdown items */
 }
@@ -40,7 +43,9 @@
 
 .unassigned-chat:hover {
   background: #fde68a;
-}/* General Styling & Layout */
+}
+
+/* General Styling & Layout */
 .menu-container {
   width: 260px;
   height: 100vh;
@@ -101,11 +106,9 @@
   overflow-y: hidden;
   overflow-x: hidden;
   padding: 12px 0;
-  /* Enable smooth scrolling on touch devices */
-
 }
 
-/* Chats Section Header (New and Improved) */
+/* Chats Section Header (Updated for Edit Folder) */
 .chats-header {
   display: flex;
   justify-content: space-between;
@@ -123,28 +126,160 @@
   color: #374151;
 }
 
-.add-folder {
+/* Edit Folder Dropdown Styles */
+.edit-folder-container {
+  position: relative;
+}
+
+.edit-folder {
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 6px;
   border-radius: 4px;
-}
-
-.add-folder:hover {
   background: #e5e7eb;
+  border: 1px solid #d1d5db;
 }
 
-.add-folder__icon {
-  width: 14px;
-  height: 14px;
-  margin-right: 4px;
+.edit-folder:hover {
+  background: #d1d5db;
 }
 
-.add-folder__text {
+.edit-folder__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.edit-folder__text {
   font-size: 13px;
-  color: #007aff;
+  color: #374151;
   font-weight: 500;
+}
+
+/* Done Renaming Button */
+.done-renaming-btn {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #10b981;
+  border: none;
+  transition: background-color 0.15s ease;
+}
+
+.done-renaming-btn:hover {
+  background: #059669;
+}
+
+.done-renaming-btn:active {
+  transform: scale(0.98);
+}
+
+.done-renaming-text {
+  font-size: 13px;
+  color: white;
+  font-weight: 600;
+}
+
+.edit-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.15);
+  z-index: 20;
+  min-width: 180px;
+  max-height: 200px;
+  margin-top: 4px;
+  overflow-y: auto;
+}
+
+.edit-dropdown-item {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+  justify-content: flex-start;
+}
+
+.edit-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.edit-dropdown-item:hover {
+  background: #f3f4f6;
+}
+
+.edit-dropdown-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 4px 0;
+}
+
+/* Rename Input Styles */
+.rename-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.rename-input {
+  flex: 1;
+  padding: 4px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  background: white;
+  outline: none;
+}
+
+.rename-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.rename-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.rename-action {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.15s ease;
+}
+
+.rename-save {
+  background: #10b981;
+  color: white;
+}
+
+.rename-save:hover {
+  background: #059669;
+  transform: scale(1.05);
+}
+
+.rename-cancel {
+  background: #ef4444;
+  color: white;
+}
+
+.rename-cancel:hover {
+  background: #dc2626;
+  transform: scale(1.05);
 }
 
 /* Folders */
@@ -242,29 +377,11 @@
 /* Scrollbar Styling - Touch Friendly */
 .menu-section {
   /* Enable smooth scrolling on touch devices */
-
 }
 
-.dropdown-menu {
+.dropdown-menu,
+.edit-dropdown-menu {
   /* Enable smooth scrolling on touch devices */
-
-
-}
-
-/* Hide scrollbars but keep scrolling functionality */
-/* .menu-section::-webkit-scrollbar,
-.dropdown-menu::-webkit-scrollbar {
-  display: none;
-} */
-
-.menu-section {
-  /* For Firefox */
-
-}
-
-.dropdown-menu {
-  /* For Firefox */
-
 }
 
 /* Add scroll indicators for better UX on touch */
@@ -277,7 +394,6 @@
   height: 8px;
   background: linear-gradient(to bottom, rgba(249, 250, 251, 1), rgba(249, 250, 251, 0));
   z-index: 10;
-
 }
 
 .menu-section::after {

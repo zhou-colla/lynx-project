@@ -16,6 +16,10 @@ export function MenuPage() {
   const [allChats, setAllChats] = useState<ChatMetadata[]>([])
   const [unassignedChats, setUnassignedChats] = useState<ChatMetadata[]>([])
   const [openDropdown, setOpenDropdown] = useState<number | null>(null)
+  const [showEditDropdown, setShowEditDropdown] = useState<boolean>(false)
+  const [renamingFolderId, setRenamingFolderId] = useState<number | null>(null)
+  const [renameValue, setRenameValue] = useState<string>('')
+  const [isRenameMode, setIsRenameMode] = useState<boolean>(false)
 
   useEffect(() => {
     async function loadData() {
@@ -54,6 +58,7 @@ export function MenuPage() {
     try {
       await newFolder.saveToFirebase()
       setFolders([...folders, newFolder])
+      setShowEditDropdown(false) // Close dropdown after creating
       console.log(`Created new folder with ID ${nextFolderId}`)
     } catch (error) {
       console.error('Failed to create new folder:', error)
@@ -71,6 +76,47 @@ export function MenuPage() {
         console.error('Failed to delete folder from Firebase:', error)
       }
     }
+  }
+
+  const handleStartRename = (folderId: number, currentName: string) => {
+    if (!isRenameMode) return // Only allow rename if in rename mode
+    setRenamingFolderId(folderId)
+    setRenameValue(currentName)
+  }
+
+  const handleEnterRenameMode = () => {
+    setIsRenameMode(true)
+    setShowEditDropdown(false)
+  }
+
+  const handleExitRenameMode = () => {
+    setIsRenameMode(false)
+    setRenamingFolderId(null)
+    setRenameValue('')
+  }
+
+  const handleRenameFolder = async (folderId: number) => {
+    if (!renameValue.trim()) return
+    
+    const folder = folders.find(f => f.id === folderId)
+    if (!folder) return
+
+    const updatedFolder = new Folder(folder.id, renameValue.trim(), folder.chats)
+    
+    try {
+      await updatedFolder.saveToFirebase()
+      setFolders(folders.map(f => f.id === folderId ? updatedFolder : f))
+      setRenamingFolderId(null)
+      setRenameValue('')
+      console.log(`Renamed folder ${folderId} to "${renameValue.trim()}"`)
+    } catch (error) {
+      console.error('Failed to rename folder:', error)
+    }
+  }
+
+  const handleCancelRename = () => {
+    setRenamingFolderId(null)
+    setRenameValue('')
   }
 
   const loadAllChatsFromFirebase = async (): Promise<ChatMetadata[]> => {
@@ -165,29 +211,106 @@ export function MenuPage() {
       <view className="menu-section">
         <view className="chats-header">
           <text className="section-title">Chats ({folders.length} folders, {allChats.length} total chats)</text>
-          <view className="add-folder" bindtap={handleCreateNewFolder}>
-            <image
-              className="add-folder__icon"
-              src={require('../../assets/add-icon-circle.png')}
-            />
-          </view>
+          
+          {/* Show Done Renaming button when in rename mode */}
+          {isRenameMode ? (
+            <view className="done-renaming-btn" bindtap={handleExitRenameMode}>
+              <text className="done-renaming-text">✓</text>
+            </view>
+          ) : (
+            <view className="edit-folder-container">
+              <view 
+                className="edit-folder" 
+                bindtap={() => setShowEditDropdown(!showEditDropdown)}
+              >
+                <image
+                  className="edit-folder__icon"
+                  src={require('../../assets/edit-icon.png')}
+                />
+              </view>
+              {showEditDropdown && (
+                <view className="edit-dropdown-menu">
+                  <view className="edit-dropdown-item" bindtap={handleCreateNewFolder}>
+                    <text>➕ Add Folder</text>
+                  </view>
+                  <view className="edit-dropdown-divider"></view>
+                  <view className="edit-dropdown-item" bindtap={handleEnterRenameMode}>
+                    <text>✏️ Rename</text>
+                  </view>
+                </view>
+              )}
+            </view>
+          )}
         </view>
+        
         {folders.map(folder => (
           <view key={folder.id} className="folder">
             <view className="folder-header">
               <view
-                bindtap={() => setOpenFolder(openFolder === folder.id ? null : folder.id)}
-                style={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}
+                bindtap={() => {
+                  if (isRenameMode && renamingFolderId !== folder.id) {
+                    handleStartRename(folder.id, folder.name)
+                  } else if (!isRenameMode) {
+                    setOpenFolder(openFolder === folder.id ? null : folder.id)
+                  }
+                }}
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  flexGrow: 1,
+                  cursor: isRenameMode ? 'pointer' : 'default'
+                }}
               >
-                <text>{folder.name} ({folder.chats.length})</text>
-                <text style={{ marginLeft: '8px' }}>{openFolder === folder.id ? '▾' : '▸'}</text>
+                {renamingFolderId === folder.id ? (
+                  <view className="rename-input-container">
+                    <input
+                      className="rename-input"
+                      value={renameValue}
+                      placeholder="Enter folder name"
+                      bindinput={(e: { detail: { value: string } }) => setRenameValue(e.detail.value)}
+                    />
+                    <view className="rename-actions">
+                      <view 
+                        className="rename-action rename-save" 
+                        bindtap={() => handleRenameFolder(folder.id)}
+                      >
+                        <text>✓</text>
+                      </view>
+                      <view 
+                        className="rename-action rename-cancel" 
+                        bindtap={handleCancelRename}
+                      >
+                        <text>✕</text>
+                      </view>
+                    </view>
+                  </view>
+                ) : (
+                  <>
+                    <text style={{ 
+                      color: isRenameMode ? '#3b82f6' : 'inherit',
+                      textDecoration: isRenameMode ? 'underline' : 'none'
+                    }}>
+                      {folder.name} ({folder.chats.length})
+                    </text>
+                    {!isRenameMode && (
+                      <text style={{ marginLeft: '8px' }}>{openFolder === folder.id ? '▾' : '▸'}</text>
+                    )}
+                    {isRenameMode && (
+                      <text style={{ marginLeft: '8px', fontSize: '12px', color: '#6b7280' }}>
+                        Click to rename
+                      </text>
+                    )}
+                  </>
+                )}
               </view>
-              <view
-                className="chat-options"
-                bindtap={() => handleDeleteFolder(folder.id)}
-              >
-                <text>DELETE</text>
-              </view>
+              {renamingFolderId !== folder.id && !isRenameMode && (
+                <view
+                  className="chat-options"
+                  bindtap={() => handleDeleteFolder(folder.id)}
+                >
+                  <text>DELETE</text>
+                </view>
+              )}
             </view>
             {openFolder === folder.id && (
               <view className="folder-chats">
