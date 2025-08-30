@@ -14,7 +14,7 @@ import { NavBar } from '../TopBar/NavBar.js'
 
 import { FIREBASE_DB } from '../../Env.js'
 
-const defaultMemory = {
+export const defaultMemory = {
   memoryID: '1',
   memoryName: 'Default Memory',
   content: 'This is the content of your memory. You can edit its content or delete it if you wish.',
