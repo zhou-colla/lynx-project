@@ -47,7 +47,6 @@ function MainApp() {
 
   return (
     <view className="app-container">
-      {currentPage === "home" && <App />}
       {currentPage === "chatdisplay" && <ChatDisplay chatID={chatID} />}
       {currentPage === "memory" && <Memory />}
       {currentPage === "chatsession" && <ChatSession />}
