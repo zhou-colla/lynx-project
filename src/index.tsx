@@ -15,6 +15,23 @@ import { CreateChatDisplay } from './components/CreateChatPage/CreateChatDisplay
 
 import './index.css'
 
+function MenuOverlay() {
+  const { isMenuOpen, closeMenu } = useNavigation();
+
+  if (!isMenuOpen) return null;
+
+  return (
+    <view className="menu-overlay" bindtap={closeMenu}>
+      <view
+        className="menu-container"
+        bindtap={(e) => e.stopPropagation()} // 阻止冒泡，点击菜单本身不会关闭
+      >
+        <MenuPage />
+      </view>
+    </view>
+  );
+}
+
 function SafeAreaWrapper({ children }: { children: ReactNode }) {
   return (
     <view className="safe-area-wrapper">
@@ -24,27 +41,19 @@ function SafeAreaWrapper({ children }: { children: ReactNode }) {
 }
 
 function MainApp() {
-  // Use the hook to get the state from the NavigationProvider
   const { currentPage } = useNavigation();
-  
-  // The rest of your logic remains the same, but without the need for setCurrentPage
-  if (currentPage === 'home') {
-    return <App />; // No more onNavigateTo prop
-  } else if (currentPage === 'chatdisplay') {
-    return <ChatDisplay chatID="chat-1" />; // No more setCurrentPage prop
-  } else if (currentPage === 'memory') {
-    return <Memory />;
-  } else if (currentPage === 'chatsession') {
-    return <ChatSession />;
-  } else if (currentPage === 'menudisplay') {
-    return <MenuPage />;
-  } else if (currentPage === 'createchat') {
-    return <CreateChatDisplay />;
-  }
 
-  return <view><text>404 Page Not Found</text></view>;
+  return (
+    <view className="app-container">
+      {currentPage === "home" && <App />}
+      {currentPage === "chatdisplay" && <ChatDisplay chatID="chat-1" />}
+      {currentPage === "memory" && <Memory />}
+      {currentPage === "chatsession" && <ChatSession />}
+      {currentPage === "createchat" && <CreateChatDisplay />}
+      <MenuOverlay />
+    </view>
+  );
 }
-
 
 root.render(
   <NavigationProvider>

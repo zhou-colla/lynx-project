@@ -14,3 +14,23 @@
     padding-right: env(safe-area-inset-right);
   }
 }
+
+.menu-overlay {
+  position: fixed;
+  inset: 0; /* 覆盖整个屏幕 */
+  background: rgba(0, 0, 0, 0.3); /* 半透明黑色背景 */
+  display: flex;
+  justify-content: flex-start; /* 菜单靠左 */
+  z-index: 1000; /* 保证覆盖在最上层 */
+}
+
+.menu-container {
+  width: 260px;
+  height: 100%;
+  background: #f9fafb;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+  overflow-y: auto;
+}

@@ -7,6 +7,10 @@ import type { ReactNode } from '@lynx-js/react';
 interface NavigationContextType {
   currentPage: string;
   setCurrentPage: (page: string) => void;
+
+  isMenuOpen: boolean;
+  openMenu: () => void;
+  closeMenu: () => void;
 }
 
 // 2. Create context, with the interface as a generic type parameter
@@ -28,7 +32,16 @@ interface NavigationProviderProps {
 
 export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children }) => {
   const [currentPage, setCurrentPage] = useState('home');
-  const value: NavigationContextType = { currentPage, setCurrentPage };
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const openMenu = () => setIsMenuOpen(true);
+  const closeMenu = () => setIsMenuOpen(false);
+
+  const value: NavigationContextType = { currentPage,
+    setCurrentPage,
+    isMenuOpen,
+    openMenu,
+    closeMenu,
+  };
 
   return (
     <NavigationContext.Provider value={value}>
