@@ -1,6 +1,6 @@
-import type { Memory } from "../../data/types.js";
 import { FIREBASE_DB } from "../../Env.js";
 import { defaultMemory } from "../MemoryPage/MemoryDisplay.js";
+import type { Memory } from '../../data/types.js';
 
 // ChatHistory.ts
 export interface ChatPart {
@@ -13,8 +13,9 @@ export interface ChatEntry {
 }
 
 
+
 export default class ChatHistory {
-  constructor(chatid: number, chattitle: string = "Untitled Chat", history: ChatEntry[] = [], memory: Memory) {
+  constructor(chatid: number, chattitle: string = "Untitled Chat", history: ChatEntry[] = [], memory: Memory = {memoryID: "", memoryName: "", content: ""}) {
 
     this.chatid = chatid;
     this.chattitle = chattitle;
@@ -64,10 +65,10 @@ export default class ChatHistory {
   }
 
   //   Memory Management
-  setMemory(id: string, title: string, value: string) {
+  setMemory(id: string, name: string, content: string) {
     this.memory["memoryID"] = id;
-    this.memory["memoryName"] = "[This is for your background information, you do not have to explcily reply it, treat it as your memory about me] " + title;
-    this.memory["content"] = value;
+    this.memory["memoryName"] = "[This is for your background information, you do not have to explcily reply it, treat it as your memory about me] " + name;
+    this.memory["content"] = content;
   }
 
   clearMemory() {
