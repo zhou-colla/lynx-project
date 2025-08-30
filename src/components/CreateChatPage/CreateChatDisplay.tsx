@@ -116,9 +116,9 @@ export function CreateChatDisplay() {
             chatTitle,
             [],
             {
-                id: memoryID ?? "0",
-                title: memoryName ?? "",
-                value: memoryContent ?? ""
+                memoryID: memoryID ?? "0",
+                memoryName: memoryName ?? "",
+                content: memoryContent ?? ""
             }
         );
         await newChat.saveToFirebase();
@@ -129,7 +129,7 @@ export function CreateChatDisplay() {
             const res = await fetch(`${FIREBASE_DB}/folders/${folderID}.json`);
             let folderData = await res.json();
             if (!folderData.chats) folderData.chats = [];
-            folderData.chats.push({ chatid: chatID, chattitle: chatTitle });
+            folderData.chats.push({ chatID: chatID, chatTitle: chatTitle });
             // Save updated folder back to Firebase
             await fetch(`${FIREBASE_DB}/folders/${folderID}.json`, {
                 method: "PUT",
