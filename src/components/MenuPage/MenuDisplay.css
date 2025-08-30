@@ -239,7 +239,6 @@
   min-width: 180px;
   max-height: 200px;
   margin-top: 4px;
-  overflow-y: auto;
 }
 
 .edit-dropdown-item {
