@@ -38,10 +38,9 @@
 
 .memory-list {
   width: 100%;
-  max-height: 120px;
+  height: 110px;
   background-color: rgb(230, 230, 230);
   margin-top: 11px;
-  overflow-y: scroll;
   border-radius: 12px;
 }
 
@@ -68,9 +67,4 @@
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
-}
-
-/* Remove border from last item */
-.memory-list-item:last-child {
-  border-bottom: 2px solid red;
 }
