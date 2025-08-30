@@ -26,7 +26,7 @@ export default class ChatHistory {
   private chatid: number = -1;
   private chattitle: string = '';
   private history: ChatEntry[] = [];
-  private memory: Record<string, string> = {"1": "[This is for your background information, you do not have to explcily reply it] mood: happy, name: xingye, home: Mars"};
+  private memory: Record<string, string> = {"1": "[This is for your background information, you do not have to explcily reply it, treat it as your memory about me] mood: happy, name: xingye, home: Mars"};
   private replyMessage: ChatEntry = { role: 'user', parts: [{ text: '' }] };
 
   setReplyMessage(message: string) {
@@ -59,7 +59,7 @@ export default class ChatHistory {
 
   //   Memory Management
   setMemory(key: string, value: string) {
-    this.memory[key] = "[This is for your background information, you do not have to explcily reply it] " + value;
+    this.memory[key] = "[This is for your background information, you do not have to explcily reply it, treat it as your memory about me] " + value;
   }
 
   deleteMemory(key: string) {
