@@ -38,20 +38,21 @@
 
 .memory-list {
   width: 100%;
-  height: 160px;
-  background-color: transparent;
+  max-height: 120px;
+  background-color: rgb(230, 230, 230);
   margin-top: 11px;
-  overflow: hidden;
+  overflow-y: scroll;
+  border-radius: 12px;
 }
 
 .memory-list-item {
   height: 45px;
   border-radius: 12px;
-  background-color: rgb(230, 230, 230);
+  background-color: transparent;
   display: flex;
   align-items: center;
   padding: 0 16px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 3px solid #eee;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
@@ -67,4 +68,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
+}
+
+/* Remove border from last item */
+.memory-list-item:last-child {
+  border-bottom: 2px solid red;
 }
