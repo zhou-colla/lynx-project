@@ -17,7 +17,6 @@ export function MemoryBar(props: { memoryID: string, setMemoryID: Dispatch<SetSt
 
 
   const loadFromFirebase = async () => {
-
     let loadedMemories: Memory[] = [];
     let index = 1;
     let emptyCount = 0;
@@ -74,23 +73,23 @@ export function MemoryBar(props: { memoryID: string, setMemoryID: Dispatch<SetSt
   return (
     <view className='memory-bar-wrapper'>
       <view className='memory-bar' bindtap={handleToggleExpand}>
-        <image 
-          src={expand ? ChevronDownIcon : ChevronRightIcon} 
-          className='chevron-icon' 
+        <image
+          src={expand ? ChevronDownIcon : ChevronRightIcon}
+          className='chevron-icon'
         />
         <text className='memory-bar-text'>{currentMemoryName}</text>
       </view>
-      
+
       {expand && (
-        <list 
+        <list
           scroll-orientation="vertical"
           className='memory-list'
         >
           {memories.map((memory, index) => {
             const isCurrentMemory = (memory.memoryID == props.memoryID);
-            
+
             return (
-              <list-item 
+              <list-item
                 key={memory.memoryID}
                 item-key={memory.memoryID}
                 className={`memory-list-item ${isCurrentMemory ? 'current-memory' : ''}`}
