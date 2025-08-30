@@ -3,13 +3,15 @@
 import { createContext, useState, useContext } from '@lynx-js/react';
 import type { ReactNode } from '@lynx-js/react';
 
-// 1. Define interface
+// 1. Define interface with params support
 interface NavigationContextType {
   currentPage: string;
+  params: any;
   setCurrentPage: (page: string) => void;
+  navigate: (page: string, params?: any) => void;
 }
 
-// 2. Create context, with the interface as a generic type parameter
+// 2. Create context
 const NavigationContext = createContext<NavigationContextType | null>(null);
 
 // 3. Create a custom hook
@@ -28,7 +30,19 @@ interface NavigationProviderProps {
 
 export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children }) => {
   const [currentPage, setCurrentPage] = useState('home');
-  const value: NavigationContextType = { currentPage, setCurrentPage };
+  const [params, setParams] = useState<any>(null);
+
+  const navigate = (page: string, newParams?: any) => {
+    setCurrentPage(page);
+    setParams(newParams || null);
+  };
+
+  const value: NavigationContextType = { 
+    currentPage, 
+    params, 
+    setCurrentPage, 
+    navigate 
+  };
 
   return (
     <NavigationContext.Provider value={value}>
@@ -36,4 +50,3 @@ export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children
     </NavigationContext.Provider>
   );
 };
-

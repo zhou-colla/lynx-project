@@ -25,13 +25,14 @@ function SafeAreaWrapper({ children }: { children: ReactNode }) {
 
 function MainApp() {
   // Use the hook to get the state from the NavigationProvider
-  const { currentPage } = useNavigation();
+  const { currentPage, params } = useNavigation();
   
   // The rest of your logic remains the same, but without the need for setCurrentPage
   if (currentPage === 'home') {
     return <App />; // No more onNavigateTo prop
   } else if (currentPage === 'chatdisplay') {
-    return <ChatDisplay chatID="chat-1" />; // No more setCurrentPage prop
+    const chatID = params?.chatID || "1";
+    return <ChatDisplay chatID={chatID} />;
   } else if (currentPage === 'memory') {
     return <Memory />;
   } else if (currentPage === 'chatsession') {

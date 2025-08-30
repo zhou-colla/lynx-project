@@ -5,6 +5,7 @@ import { NavBar } from '../TopBar/NavBar.js'
 import type { Memory, Folder, Chat } from '../../data/types.ts';
 import { defaultMemory } from '../MemoryPage/MemoryDisplay.js';
 import ChatHistory from '../ChatSession/ChatHistory.js';
+import { useNavigation } from '../NavigationContext.js';
 
 import { FIREBASE_DB } from '../../Env.js'
 
@@ -16,6 +17,8 @@ export function CreateChatDisplay() {
     const [memoryDropdown, setMemoryDropdown] = useState(false)
     const [availableMemories, setAvailableMemories] = useState<Memory[]>([])
     const [availableFolders, setAvailableFolders] = useState<Folder[]>([])
+
+    const { navigate } = useNavigation();
 
     const loadMemoriesFromFirebase = async () => {
         let loadedMemories: Memory[] = [];
@@ -133,6 +136,7 @@ export function CreateChatDisplay() {
             });
         }
 
+        navigate('chatdisplay', { chatID: chatID.toString() });
     }
 
     return (
