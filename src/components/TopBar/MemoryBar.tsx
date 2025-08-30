@@ -4,7 +4,6 @@ import './MemoryBar.css';
 import ChevronRightIcon from '../../assets/white-right-arrow.png'
 import ChevronDownIcon from '../../assets/white-down-arrow.png'
 import type { Memory } from '../../data/types.ts';
-import data from '../../data/memories.json' with { type: "json"};
 import { FIREBASE_DB } from '../../Env.js'
 import { defaultMemory } from '../MemoryPage/MemoryDisplay.js';
 
