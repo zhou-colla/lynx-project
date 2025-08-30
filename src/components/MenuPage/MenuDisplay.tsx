@@ -209,38 +209,39 @@ export function MenuPage() {
       </view>
 
       <view className="menu-section">
-        <view className="chats-header">
-          <text className="section-title">Chats ({folders.length} folders, {allChats.length} total chats)</text>
-          
-          {/* Show Done Renaming button when in rename mode */}
-          {isRenameMode ? (
-            <view className="done-renaming-btn" bindtap={handleExitRenameMode}>
-              <text className="done-renaming-text">✓</text>
-            </view>
-          ) : (
-            <view className="edit-folder-container">
-              <view 
-                className="edit-folder" 
-                bindtap={() => setShowEditDropdown(!showEditDropdown)}
-              >
-                <image
-                  className="edit-folder__icon"
-                  src={require('../../assets/edit-icon.png')}
-                />
+        <scroll-view scroll-orientation="vertical" style={{ height: "100%", borderRadius: "10px" }}>
+          <view className="chats-header">
+            <text className="section-title">Chats ({folders.length} folders, {allChats.length} total chats)</text>
+
+            {/* Show Done Renaming button when in rename mode */}
+            {isRenameMode ? (
+              <view className="done-renaming-btn" bindtap={handleExitRenameMode}>
+                <text className="done-renaming-text">✓</text>
               </view>
-              {showEditDropdown && (
-                <view className="edit-dropdown-menu">
-                  <view className="edit-dropdown-item" bindtap={handleCreateNewFolder}>
-                    <text>➕ Add Folder</text>
-                  </view>
-                  <view className="edit-dropdown-divider"></view>
-                  <view className="edit-dropdown-item" bindtap={handleEnterRenameMode}>
-                    <text>✏️ Rename</text>
-                  </view>
+            ) : (
+              <view className="edit-folder-container">
+                <view 
+                  className="edit-folder" 
+                  bindtap={() => setShowEditDropdown(!showEditDropdown)}
+                >
+                  <image
+                    className="edit-folder__icon"
+                    src={require('../../assets/edit-icon.png')}
+                  />
                 </view>
-              )}
-            </view>
-          )}
+                {showEditDropdown && (
+                  <view className="edit-dropdown-menu">
+                    <view className="edit-dropdown-item" bindtap={handleCreateNewFolder}>
+                      <text>➕ Add Folder</text>
+                    </view>
+                    <view className="edit-dropdown-divider"></view>
+                    <view className="edit-dropdown-item" bindtap={handleEnterRenameMode}>
+                      <text>✏️ Rename</text>
+                    </view>
+                  </view>
+                )}
+              </view>
+            )}
         </view>
         
         {folders.map(folder => (
@@ -373,6 +374,7 @@ export function MenuPage() {
             Debug: Folders={folders.length}, Chats={allChats.length}, Unassigned={unassignedChats.length}
           </text>
         </view>
+        </scroll-view>
       </view>
     </view>
   )
