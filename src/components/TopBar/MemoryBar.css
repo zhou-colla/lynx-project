@@ -38,7 +38,7 @@
 
 .memory-list {
   width: 100%;
-  height: 112px;
+  height: 160px;
   background-color: transparent;
   margin-top: 11px;
   overflow: hidden;
@@ -47,7 +47,7 @@
 .memory-list-item {
   height: 45px;
   border-radius: 12px;
-  background-color: white;
+  background-color: rgb(230, 230, 230);
   display: flex;
   align-items: center;
   padding: 0 16px;
@@ -57,7 +57,7 @@
 }
 
 .memory-list-item.current-memory {
-  background-color: #e0e0e0;
+  background-color: #b5b4b4;
 }
 
 .memory-list-text {
