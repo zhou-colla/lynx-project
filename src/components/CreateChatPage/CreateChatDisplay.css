@@ -1,0 +1,123 @@
+.create-chat-container {
+  background: #f0f0f0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.create-chat-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  padding: 32px 24px;
+  margin-top: 48px;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.create-chat-title {
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: #4a4a4a;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 1rem;
+  color: #6a6a6a;
+  margin-bottom: 2px;
+}
+
+.form-input {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d2d7c7;
+  font-size: 1rem;
+  background: #f8f8f8;
+  color: #222;
+}
+
+.dropdown-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8f8f8;
+  border: 1px solid #d2d7c7;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
+
+.dropdown-text {
+  color: #222;
+}
+
+.dropdown-chevron {
+  font-size: 1.1rem;
+  color: #888;
+  margin-left: 8px;
+}
+
+.dropdown-list {
+  background: #fff;
+  border: 1px solid #d2d7c7;
+  border-radius: 8px;
+  margin-top: 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.dropdown-list-item {
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #222;
+  transition: background 0.15s;
+}
+
+.dropdown-list-item.selected,
+.dropdown-list-item:hover {
+  background: #E2E7D3;
+  color: #fff;
+}
+
+.dropdown-list-text {
+  font-size: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.create-chat-btn {
+  background: #E2E7D3;
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 28px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: center;
+}
+
+.create-chat-btn.disabled {
+  background: #d2d7c7;
+  cursor: not-allowed;
+}
