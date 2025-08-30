@@ -11,15 +11,33 @@ export interface ChatEntry {
 }
 
 export default class ChatHistory {
-  constructor(chatid: number, chattitle: string) {
+  constructor(chatid: number, chattitle: string = "Untitled Chat", history: ChatEntry[] = [], memory: Record<string, string> = {}) {
+
     this.chatid = chatid;
     this.chattitle = chattitle;
+    this.history = history;
+    this.memory = memory;
+    this.saveTitleIdToFirebase();
   }
 
+  private isReplying: boolean = false;
   private chatid: number = -1;
   private chattitle: string = '';
   private history: ChatEntry[] = [];
   private memory: Record<string, string> = {"1": "[This is for your background information, you do not have to explcily reply it] mood: happy, name: xingye, home: Mars"};
+  private replyMessage: ChatEntry = { role: 'user', parts: [{ text: '' }] };
+
+  setReplyMessage(message: string) {
+    this.replyMessage.parts[0].text = "[ The user is replying to: " + message + " ]";
+  }
+
+  setReplying(value: boolean) {
+    this.isReplying = value;
+  }
+
+  getReplyMessage(): ChatEntry {
+    return this.replyMessage;
+  }
 
   addUserMessage(message: string) {
     this.history.push({ role: 'user', parts: [{ text: message }] });
@@ -71,19 +89,32 @@ export default class ChatHistory {
       })
     );
 
-    return [...memoryEntries, ...this.history];
+
+  if (this.isReplying) {
+  return [...memoryEntries, ...this.history, this.replyMessage];
+    }
+
+  return [...memoryEntries, ...this.history];
+}
+
+  async saveGlobalCounter(count: number) {
+    const res = await fetch(`${FIREBASE_DB}/global_counter.json`, {
+      method: 'PUT', // PUT overwrites the value
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(count),
+    });
+
+    if (!res.ok) {
+      console.error('Failed to save global counter', await res.text());
+    }
   }
 
-  getChatId(): number {
-    return this.chatid;
-  }
-
-  getChatTitle(): string {
-    return this.chattitle;
-  }
-
-  setChatTitle(title: string) {
-    this.chattitle = title;
+  async saveTitleIdToFirebase() {
+    await fetch(`${FIREBASE_DB}/menu/${this.chatid}.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: this.chattitle }),
+    });
   }
 
   async saveToFirebase() {
@@ -98,30 +129,41 @@ export default class ChatHistory {
     });
   }
 
-  async loadFromFirebase() {
-    const res = await fetch(`${FIREBASE_DB}/chats/${this.chatid}.json`);
+  static async loadFromFirebase(chatid: number, title: string):Promise<ChatHistory> {
+    const res = await fetch(`${FIREBASE_DB}/chats/${chatid}.json`);
     if (res.ok) {
       const data = await res.json();
-      this.history = data.history || [];
-      this.memory = data.memory || {};
-      this.chattitle = data.title || `Chat ${this.chatid}`;
+
+      const history = data.history || [];
+      const memory = data.memory || {};
+      return new ChatHistory(chatid, title, history, memory);
     } else {
-      console.log("No data found for chat:", this.chatid);
+      console.log("No data found for chat:", chatid);
+      return new ChatHistory(chatid, title);
     }
   }
 
-  // Static method to load chat metadata (just ID and title) for menu display
-  static async loadChatMetadata(chatId: number): Promise<{id: number, title: string} | null> {
-    const res = await fetch(`${FIREBASE_DB}/chats/${chatId}.json`);
-    if (res.ok) {
-      const data = await res.json();
-      if (data) {
-        return {
-          id: chatId,
-          title: data.title || `Chat ${chatId}`
-        };
-      }
-    }
-    return null;
-  }
+
+  // // Add this method inside your ChatHistory class
+  // static async getGlobalCounter(): Promise<number> {
+  //   try {
+  //     const res = await fetch(`${FIREBASE_DB}/global_counter.json`);
+      
+  //     // Handle Firebase's "null" response for non-existing data
+  //     if (res.status === 200) {
+  //       const data = await res.json();
+  //       return data === null ? 0 : data;
+  //     }
+      
+  //     // Handle actual errors (404, network issues, etc)
+  //     console.error('Failed to fetch global counter', res.status, await res.text());
+  //     return 0;
+  //   } catch (error) {
+  //     console.error('Network error fetching global counter', error);
+  //     return 0;
+  //   }
+  // }
+
+
 }
+

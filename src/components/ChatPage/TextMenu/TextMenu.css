@@ -1,0 +1,47 @@
+.Background {
+  width: 100vw;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.App {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.Container {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.NormalText {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.ContextMenu {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+  padding: 5px;
+  z-index: 100;
+}
+
+.ContextMenuText {
+  color: #fff;
+  font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  &:active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}

@@ -1,9 +1,91 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Make the container fill the entire viewport height */
+}
+
+.dialog-display-and-input {
+  display: flex;
+  flex-direction: column;
+  /*justify-content: flex-end;*/
+  flex-grow: 1;
+}
+
+.dialog-display {
+  flex-grow: 1;
+  background-color: #f9f9f9;
+  padding: 8px;
+}
+
+.dialog-list-item {
+  margin-bottom: 8px;
+}
+
+.optional-reply-bar {
+  flex-shrink: 0;
+  display: flex;
+  background-color: #BEDFE4;
+  padding: 8px;
+  gap: 8px;
+}
+
+.optional-text {
+  flex: 1;
+  max-height: calc(20px * 5);
+  font-size: 14px;
+  color: black;
+  line-height: 20px;
+}
+
+.close-reply-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.input-box-container {
+  /* This is a flex container, so it can control the alignment of its children */
+  display: flex;
+  flex-shrink: 0;
+  height: 50px;
+  padding: 5px 20px; /* increase the 20px here for iPhone */
+  background-color: white;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-box-container input {
+  flex-grow: 1;
+  height: 40px;
+}
+
+.input-box-container .send-button {
+  background-color: #385542;;
+  padding: 0 5px;
+  height: 35px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+}
+
+.input-box-container .send-button-text {
+  white-space: nowrap;
+  color: white;
+}
+
 .assistant-bubble {
-  background: #eee;
-  border-radius: 16px;
-  padding: 8px 12px;
+  padding: 12px 12px;
   margin: 4px 0;
-  max-width: 70%;
+  max-width: 100%;
+}
+
+.reply-icon {
+  width: 25px;
+  height: 25px;
+  margin: 4px 0;
 }
 
 .user-bubble {
