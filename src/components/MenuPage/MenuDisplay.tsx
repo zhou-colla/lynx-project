@@ -16,21 +16,32 @@ export function MenuPage() {
   }, [])
 
   const handleCreateNewFolder = async () => {
-    const nextFolderId = folders.length > 0 ? Math.max(...folders.map(f => f.id)) + 1 : 1
+    // Find the next available folder ID by checking what's already used
+    const existingIds = folders.map(f => f.id)
+    let nextFolderId = 1
+    while (existingIds.includes(nextFolderId)) {
+      nextFolderId++
+    }
+    
     const newFolderName = `Folder ${nextFolderId}`
     const newFolder = new Folder(nextFolderId, newFolderName)
 
-    await newFolder.saveToFirebase()
-    setFolders([...folders, newFolder])
+    try {
+      await newFolder.saveToFirebase()
+      setFolders([...folders, newFolder])
+      console.log(`Created new folder with ID ${nextFolderId}`)
+    } catch (error) {
+      console.error('Failed to create new folder:', error)
+    }
   }
 
   const handleDeleteFolder = async (folderId: number) => {
     const folderToDelete = folders.find(folder => folder.id === folderId)
     if (folderToDelete) {
-      setFolders(folders.filter(folder => folder.id !== folderId))
-
       try {
         await folderToDelete.deleteFromFirebase()
+        setFolders(folders.filter(folder => folder.id !== folderId))
+        console.log(`Deleted folder with ID ${folderId}`)
       } catch (error) {
         console.error('Failed to delete folder from Firebase:', error)
       }
@@ -55,6 +66,7 @@ export function MenuPage() {
         setFolders(folders.map(folder => 
           folder.id === updatedFolder.id ? updatedFolder : folder
         ))
+        console.log(`Added new chat to folder ${folderToUpdate.id}`)
       } catch (error) {
         console.error('Failed to update folder with new chat:', error)
       }

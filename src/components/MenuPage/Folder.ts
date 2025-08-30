@@ -58,15 +58,30 @@ export class Folder {
   }
 
   static async getAllFromFirebase(): Promise<Folder[]> {
-    const res = await fetch(`${FIREBASE_DB}/folders.json`)
-    if (res.ok) {
-      const data = await res.json()
-      if (data) {
-        return Object.values(data).map(
-          (folder: any) => new Folder(folder.id, folder.name, folder.chats || [])
-        )
+    let loadedFolders: Folder[] = [];
+    let index = 1;
+    let emptyCount = 0;
+    
+    while (true) {
+      const res = await fetch(`${FIREBASE_DB}/folders/${index}.json`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      });
+      
+      if (!res.ok) break; // Stop if not found or error
+      
+      const folder = await res.json();
+      if (!folder || Object.keys(folder).length === 0) {
+        emptyCount++;
+        if (emptyCount > 3) break; // Stop after 3 empty responses
+        index++;
+        continue;
       }
+      
+      loadedFolders.push(new Folder(folder.id, folder.name, folder.chats || []));
+      index++;
     }
-    return []
+    
+    return loadedFolders;
   }
 }
