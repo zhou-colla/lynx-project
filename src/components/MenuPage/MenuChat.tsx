@@ -9,30 +9,37 @@ import DeleteIcon from '../../assets/delete-icon.png';
 import { useNavigation } from '../NavigationContext.jsx';
 
 interface ChatMetadata {
-  id: number
-  title: string
-  folderId?: number
+    id: number
+    title: string
+    folderId?: number
 }
 
 export function MenuChat(props: { chatID: number, chatTitle: string, folderId: number }) {
     // when no folder, folderId = -1
-    const { setCurrentPage, closeMenu } = useNavigation();
-    
+    const { navigate, closeMenu } = useNavigation();
+
     return (
         <view key={props.chatID} className="chat-item">
             <text>{props.chatTitle}</text>
             <view className="chat-options">
-            <view className="image-container">
-                <image 
-                src={EditIcon} 
-                style={{ width: "25px", height: "25px", marginRight: "8px"}} 
-                bindtap={() => {setCurrentPage("memory"); closeMenu()}}
-                />
-                <image 
-                src={DeleteIcon} 
-                style={{ width: "25px", height: "25px" }} /* can use the setUnassignedChats in MenuDisplay */
-                />
-            </view>
+                <view className="image-container">
+                    <image
+                        src={EditIcon}
+                        style={{ width: "25px", height: "25px", marginRight: "8px" }}
+                        bindtap={() => {
+                            navigate("editchat", {
+                                folderID: props.folderId !== undefined ? props.folderId.toString() : "",
+                                chatID: props.chatID.toString(),
+                                chatTitle: props.chatTitle
+                            });
+                            closeMenu();
+                        }}
+                    />
+                    <image
+                        src={DeleteIcon}
+                        style={{ width: "25px", height: "25px" }} /* can use the setUnassignedChats in MenuDisplay */
+                    />
+                </view>
             </view>
         </view>
     )
