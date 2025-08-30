@@ -12,9 +12,15 @@ export interface ChatEntry {
   parts: ChatPart[];
 }
 
+export interface MemoryEntry {
+  id: string;
+  title: string;
+  value: string;
+}
+
 export default class ChatHistory {
 
-  constructor(chatid: number, chattitle: string = "Untitled Chat", history: ChatEntry[] = [], memory: Record<string, string> = {}) {
+  constructor(chatid: number, chattitle: string = "Untitled Chat", history: ChatEntry[] = [], memory: MemoryEntry = {id: "", title: "", value: ""}) {
     this.chatid = chatid;
     this.chattitle = chattitle;
     this.history = history;
@@ -26,7 +32,7 @@ export default class ChatHistory {
   private chatid: number = -1;
   private chattitle: string = '';
   private history: ChatEntry[] = [];
-  private memory: Record<string, string> = {"1": "[This is for your background information, you do not have to explcily reply it, treat it as your memory about me] mood: happy, name: xingye, home: Mars"};
+  private memory: MemoryEntry = { id: "0", title: "[This is for your background information, you do not have to explcily reply it, treat it as your memory about me] S", value: "S is sweet" };
   private replyMessage: ChatEntry = { role: 'user', parts: [{ text: '' }] };
 
   setReplyMessage(message: string) {
@@ -58,16 +64,14 @@ export default class ChatHistory {
   }
 
   //   Memory Management
-  setMemory(key: string, value: string) {
-    this.memory[key] = "[This is for your background information, you do not have to explcily reply it, treat it as your memory about me] " + value;
-  }
-
-  deleteMemory(key: string) {
-    delete this.memory[key];
+  setMemory(id: string, title: string, value: string) {
+    this.memory["id"] = id;
+    this.memory["title"] = "[This is for your background information, you do not have to explcily reply it, treat it as your memory about me] " + title;
+    this.memory["value"] = value;
   }
 
   clearMemory() {
-    this.memory = {};
+    this.memory = { id: "", title: "", value: "" };
   }
 
 
@@ -75,24 +79,25 @@ export default class ChatHistory {
     return this.history;
   }
 
-  getMemory(): Record<string, string> {
+  getMemory(): MemoryEntry {
     return this.memory;
   }
 
   getPrompt(): ChatEntry[] {
-    const memoryEntries: ChatEntry[] = Object.entries(this.memory).map(
-      ([key, value]) => ({
+    const memoryEntries: ChatEntry[] = [
+      {
         role: 'user',
-        parts: [{ text: `${key}: ${value}` }],
-      })
-    );
+        parts: [{ text: `${this.memory.title}: ${this.memory.value}` }]
+      }
+    ];
 
-  if (this.isReplying) {
-  return [...memoryEntries, ...this.history, this.replyMessage];
+    if (this.isReplying) {
+      return [...memoryEntries, ...this.history, this.replyMessage];
     }
 
-  return [...memoryEntries, ...this.history];
-}
+    return [...memoryEntries, ...this.history];
+  }
+
 
   static async saveGlobalCounter(count: number) {
     const res = await fetch(`${FIREBASE_DB}/global_counter.json`, {
