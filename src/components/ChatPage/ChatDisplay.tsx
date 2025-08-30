@@ -5,7 +5,7 @@ import { UserChatBubble } from './UserChatBubble.js';
 import { AssistantChatBubble } from './AssistantChatBubble.js';
 import { NavBar } from '../TopBar/NavBar.js';
 import { MemoryBar } from '../TopBar/MemoryBar.js';
-import CrossIcon from '../../assets/cross-icon.png'
+import CrossIcon from '../../assets/cross-icon.png';
 import { GEMINI_API_KEY } from "../../Env.js";
 import './Chat.css';
 
