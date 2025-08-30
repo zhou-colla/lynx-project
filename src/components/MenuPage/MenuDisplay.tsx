@@ -6,6 +6,8 @@ import { FIREBASE_DB } from '../../Env.js'
 import EditIcon from '../../assets/edit-icon.png';
 import DeleteIcon from '../../assets/delete-icon.png';
 
+import { useNavigation } from '../NavigationContext.jsx';
+
 interface ChatMetadata {
   id: number
   title: string
@@ -13,6 +15,8 @@ interface ChatMetadata {
 }
 
 export function MenuPage() {
+  const { setCurrentPage, closeMenu } = useNavigation();
+
   const [openFolder, setOpenFolder] = useState<number | null>(null)
   const [openMemory, setOpenMemory] = useState<string | null>('Default Memory')
   const [folders, setFolders] = useState<Folder[]>([])
@@ -326,8 +330,15 @@ export function MenuPage() {
                       <text>{chat.title}</text>
                       <view className="chat-options">
                         <view className="image-container">
-                          <image src={EditIcon} style={{ width: 60, height: 60, marginRight: 8}} />
-                          <image src={DeleteIcon} style={{ width: 60, height: 60 }} />
+                          <image 
+                            src={EditIcon} 
+                            style={{ width: 60, height: 60, marginRight: 8}} 
+                            bindtap={() => {setCurrentPage("memory"); closeMenu()}} /* chat.id, chat.title, folder.id */
+                          />
+                          <image 
+                            src={DeleteIcon} 
+                            style={{ width: 60, height: 60 }} 
+                          />
                         </view>
                       </view>
                     </view>
@@ -340,6 +351,45 @@ export function MenuPage() {
         
         {/* Unassigned Chats Section */}
         {unassignedChats.length > 0 && (
+          <view className="unassigned-section">
+            <view className="unassigned-header">
+              <text className="section-title">Unassigned Chats ({unassignedChats.length})</text>
+            </view>
+            {unassignedChats.map(chat => (
+              <view key={chat.id} className="chat-item">
+                <text>{chat.title}</text>
+                <view className="chat-options">
+                  <view className="image-container">
+                    <image 
+                      src={EditIcon} 
+                      style={{ width: 60, height: 60, marginRight: 8}} 
+                      bindtap={() => {setCurrentPage("memory"); closeMenu()}} /* chat.id, chat.title, folder.id */
+                    />
+                    <image 
+                      src={DeleteIcon} 
+                      style={{ width: 60, height: 60 }} 
+                    />
+                  </view>
+                </view>
+              </view>
+            ))}
+          </view>
+        )}
+        
+        {/* Debug info at bottom */}
+        <view style={{ padding: '20px', background: '#f0f0f0', margin: '20px', borderRadius: '8px' }}>
+          <text style={{ fontSize: '12px', color: '#666' }}>
+            Debug: Folders={folders.length}, Chats={allChats.length}, Unassigned={unassignedChats.length}
+          </text>
+        </view>
+        </scroll-view>
+      </view>
+    </view>
+  )
+}
+
+/* Original unassigned chats
+{unassignedChats.length > 0 && (
           <view className="unassigned-section">
             <view className="unassigned-header">
               <text className="section-title">Unassigned Chats ({unassignedChats.length})</text>
@@ -375,15 +425,5 @@ export function MenuPage() {
             ))}
           </view>
         )}
-        
-        {/* Debug info at bottom */}
-        <view style={{ padding: '20px', background: '#f0f0f0', margin: '20px', borderRadius: '8px' }}>
-          <text style={{ fontSize: '12px', color: '#666' }}>
-            Debug: Folders={folders.length}, Chats={allChats.length}, Unassigned={unassignedChats.length}
-          </text>
-        </view>
-        </scroll-view>
-      </view>
-    </view>
-  )
-}
+
+ */
