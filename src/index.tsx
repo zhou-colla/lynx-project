@@ -16,6 +16,21 @@ import { EditChatDisplay } from './components/EditChatPage/EditChatDisplay.js';
 
 import './index.css'
 
+function MenuOverlay() {
+  const { isMenuOpen, closeMenu } = useNavigation();
+
+  if (!isMenuOpen) return null;
+
+  return (
+    <view className="menu-overlay">
+      <view className="menu-container">
+        <MenuPage />
+      </view>
+      <view className="menu-backdrop" bindtap={closeMenu}></view>
+    </view>
+  );
+}
+
 function SafeAreaWrapper({ children }: { children: ReactNode }) {
   return (
     <view className="safe-area-wrapper">
@@ -25,36 +40,20 @@ function SafeAreaWrapper({ children }: { children: ReactNode }) {
 }
 
 function MainApp() {
-  // Use the hook to get the state from the NavigationProvider
   const { currentPage, params } = useNavigation();
-  
-  // The rest of your logic remains the same, but without the need for setCurrentPage
-  if (currentPage === 'home') {
-    return <App />; // No more onNavigateTo prop
-  } else if (currentPage === 'chatdisplay') {
-    const chatID = params?.chatID || "1";
-    return <ChatDisplay chatID={chatID} />;
-  } else if (currentPage === 'memory') {
-    return <Memory />;
-  } else if (currentPage === 'chatsession') {
-    return <ChatSession />;
-  } else if (currentPage === 'menudisplay') {
-    return <MenuPage />;
-  } else if (currentPage === 'createchat') {
-    return <CreateChatDisplay />;
-  } else if (currentPage === 'editchat') {
-    return (
-      <EditChatDisplay
-        folderID={params?.folderID || ""}
-        chatID={params?.chatID || ""}
-        chatTitle={params?.chatTitle || ""}
-      />
-    );
-  }
+  const chatID = params?.chatID || "1";
 
-  return <view><text>404 Page Not Found</text></view>;
+  return (
+    <view className="app-container">
+      {currentPage === "home" && <App />}
+      {currentPage === "chatdisplay" && <ChatDisplay chatID={chatID} />}
+      {currentPage === "memory" && <Memory />}
+      {currentPage === "chatsession" && <ChatSession />}
+      {currentPage === "createchat" && <CreateChatDisplay />}
+      <MenuOverlay />
+    </view>
+  );
 }
-
 
 root.render(
   <NavigationProvider>

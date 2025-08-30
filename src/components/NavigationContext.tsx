@@ -9,6 +9,10 @@ interface NavigationContextType {
   params: any;
   setCurrentPage: (page: string) => void;
   navigate: (page: string, params?: any) => void;
+
+  isMenuOpen: boolean;
+  openMenu: () => void;
+  closeMenu: () => void;
 }
 
 // 2. Create context
@@ -37,11 +41,18 @@ export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children
     setParams(newParams || null);
   };
 
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const openMenu = () => setIsMenuOpen(true);
+  const closeMenu = () => setIsMenuOpen(false);
+
   const value: NavigationContextType = { 
-    currentPage, 
+    currentPage,
+    setCurrentPage,
     params, 
-    setCurrentPage, 
-    navigate 
+    navigate,
+    isMenuOpen,
+    openMenu,
+    closeMenu,
   };
 
   return (

@@ -13,10 +13,6 @@ import './Chat.css';
 import ChatHistory from '../ChatSession/ChatHistory.js';
 import type { ChatEntry } from '../ChatSession/ChatHistory.js';
 
-// Import static chat data (optional for memoryID)
-import type { ChatData, Chat } from "../../data/types.ts";
-import data from "../../data/chats.json" with { type: "json" };
-const chatData: ChatData = data;
 
 export function ChatDisplay(props: { chatID: string }) {
   const [messages, setMessages] = useState<ChatEntry[]>([]);
@@ -45,8 +41,7 @@ export function ChatDisplay(props: { chatID: string }) {
         setMessages(chatInstance.getHistory());
         setMemoryID(chatInstance.getMemory().memoryID);
 
-        const chat: Chat | undefined = chatData.chats.find((c: Chat) => c.chatID === props.chatID);
-        if (chat) setMemoryID(chat.memoryID);
+
       } catch (err) {
         console.error("Failed to load chat history:", err);
         setMessages([]);
