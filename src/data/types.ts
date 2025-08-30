@@ -29,3 +29,10 @@ export interface Memory {
 export interface MemoryData {
   memories: Memory[];
 }
+
+// Define the structure of a single folder object
+export interface Folder {
+  folderID: string;
+  folderName: string;
+  chats: Chat[];
+}

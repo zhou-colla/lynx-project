@@ -1,30 +1,138 @@
-import { useState } from '@lynx-js/react'
+import { useState, useEffect } from '@lynx-js/react'
+
 import './CreateChatDisplay.css'
 import { NavBar } from '../TopBar/NavBar.js'
+import type { Memory, Folder, Chat } from '../../data/types.ts';
+import { defaultMemory } from '../MemoryPage/MemoryDisplay.js';
+import ChatHistory from '../ChatSession/ChatHistory.js';
 
-const availableFolders = ['Personal', 'Work', 'Ideas', 'Archive']
-const availableMemories = [
-    { memoryID: '1', memoryName: 'Default Memory' },
-    { memoryID: '2', memoryName: 'Project Ideas' },
-    { memoryID: '3', memoryName: 'Travel Plans' },
-    { memoryID: '3', memoryName: 'Travel Plans' },
-    { memoryID: '3', memoryName: 'Travel Plans' },
-    { memoryID: '3', memoryName: 'Travel Plans' },
-    { memoryID: '3', memoryName: 'Travel Plans' },
-]
+import { FIREBASE_DB } from '../../Env.js'
 
 export function CreateChatDisplay() {
-    const [folder, setFolder] = useState<string>('')
+    const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
     const [folderDropdown, setFolderDropdown] = useState(false)
     const [chatTitle, setChatTitle] = useState<string>('')
-    const [memory, setMemory] = useState<string>('')
+    const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null)
     const [memoryDropdown, setMemoryDropdown] = useState(false)
+    const [availableMemories, setAvailableMemories] = useState<Memory[]>([])
+    const [availableFolders, setAvailableFolders] = useState<Folder[]>([])
 
-    const handleCreateChat = () => {
-        console.log({ folder, chatTitle, memory })
-        setFolder('')
-        setChatTitle('')
-        setMemory('')
+    const loadMemoriesFromFirebase = async () => {
+        let loadedMemories: Memory[] = [];
+        let index = 1;
+        let emptyCount = 0;
+
+        while (true) {
+            const res = await fetch(`${FIREBASE_DB}/memories/${index}.json`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            if (!res.ok) break; // Stop if not found or error
+
+            const memory = await res.json();
+            if (!memory || Object.keys(memory).length === 0) {
+                emptyCount++;
+                if (emptyCount > 3) break; // Stop after 3 empty responses
+                index++;
+                continue
+            }
+
+            loadedMemories.push(memory);
+            index++;
+        }
+
+        if (loadedMemories.length > 0) {
+            setAvailableMemories(loadedMemories);
+        } else {
+            setAvailableMemories([defaultMemory]);
+        }
+    }
+
+    const loadFoldersFromFirebase = async () => {
+        let loadedFolders = [];
+        let index = 1;
+
+        while (true) {
+            const res = await fetch(`${FIREBASE_DB}/folders/${index}.json`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            if (!res.ok) break; // Stop if not found or error
+
+            const data = await res.json();
+
+            if (!data || Object.keys(data).length === 0) break;
+
+            // Only check for id and name, chats can be empty
+            if (data && data.id && data.name) {
+                loadedFolders.push({
+                    folderID: data.id.toString(),
+                    folderName: data.name,
+                    // Initialize empty array if no chats exist
+                    chats: data.chats
+                        ? Object.values(data.chats).map((chat: any) => ({
+                            chatID: chat.chatid?.toString() || '',
+                            chatName: chat.chattitle || '',
+                            memoryID: chat.memoryid || '',
+                            messages: chat.messages || []
+                        }))
+                        : []
+                });
+            }
+
+
+            index++;
+        }
+
+        if (loadedFolders.length > 0) {
+            setAvailableFolders(loadedFolders)
+        }
+    }
+
+    // load folders and memories from firebase on component mount
+    useEffect(() => {
+        loadMemoriesFromFirebase();
+        loadFoldersFromFirebase();
+    }, []);
+
+    const handleCreateChat = async () => {
+        const chatID = await ChatHistory.getGlobalCounter() + 1;
+        await ChatHistory.saveGlobalCounter(chatID);
+
+        const folderID = selectedFolder?.folderID;
+        const folderName = selectedFolder?.folderName;
+
+        const memoryID = selectedMemory?.memoryID;
+        const memoryName = selectedMemory?.memoryName;
+        const memoryContent = selectedMemory?.content;
+
+        const newChat = new ChatHistory(
+            chatID,
+            chatTitle,
+            [],
+            {
+                memoryID: memoryContent ?? ""
+            }
+        );
+        await newChat.saveToFirebase();
+
+        // save chat to folder as well
+        if (folderID) {
+            // Fetch the folder from Firebase
+            const res = await fetch(`${FIREBASE_DB}/folders/${folderID}.json`);
+            let folderData = await res.json();
+            if (!folderData.chats) folderData.chats = [];
+            folderData.chats.push({ chatid: chatID, chattitle: chatTitle });
+            // Save updated folder back to Firebase
+            await fetch(`${FIREBASE_DB}/folders/${folderID}.json`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(folderData),
+            });
+        }
+
     }
 
     return (
@@ -36,10 +144,10 @@ export function CreateChatDisplay() {
 
                     {/* Folder Dropdown */}
                     <view className="form-group">
-                        <text className="form-label">Select Folder</text>
+                        <text className="form-label">Folder</text>
                         <view className="dropdown-bar" bindtap={() => setFolderDropdown(!folderDropdown)}>
                             <text className="dropdown-text">
-                                {folder || "Select a folder"}
+                                {selectedFolder ? selectedFolder.folderName : "Select a folder"}
                             </text>
                             <text className="dropdown-chevron">{folderDropdown ? "▼" : "▶"}</text>
                         </view>
@@ -52,14 +160,14 @@ export function CreateChatDisplay() {
                                 <view>
                                     {availableFolders.map(f => (
                                         <view
-                                            key={f}
-                                            className={`dropdown-list-item${folder === f ? ' selected' : ''}`}
+                                            key={f.folderID}
+                                            className={`dropdown-list-item${selectedFolder?.folderName === f.folderName ? ' selected' : ''}`}
                                             bindtap={() => {
-                                                setFolder(f)
+                                                setSelectedFolder(f)
                                                 setFolderDropdown(false)
                                             }}
                                         >
-                                            <text className="dropdown-list-text">{f}</text>
+                                            <text className="dropdown-list-text">{f.folderName}</text>
                                         </view>
                                     ))}
                                 </view>
@@ -80,12 +188,10 @@ export function CreateChatDisplay() {
 
                     {/* Memory Dropdown */}
                     <view className="form-group">
-                        <text className="form-label">Select Memory</text>
+                        <text className="form-label">Memory</text>
                         <view className="dropdown-bar" bindtap={() => setMemoryDropdown(!memoryDropdown)}>
                             <text className="dropdown-text">
-                                {memory
-                                    ? availableMemories.find(m => m.memoryID === memory)?.memoryName
-                                    : "Select a memory"}
+                                {selectedMemory ? selectedMemory.memoryName : "Select a memory"}
                             </text>
                             <text className="dropdown-chevron">{memoryDropdown ? "▼" : "▶"}</text>
                         </view>
@@ -99,9 +205,9 @@ export function CreateChatDisplay() {
                                     {availableMemories.map(m => (
                                         <view
                                             key={m.memoryID}
-                                            className={`dropdown-list-item${memory === m.memoryID ? ' selected' : ''}`}
+                                            className={`dropdown-list-item${selectedMemory?.memoryID === m.memoryID ? ' selected' : ''}`}
                                             bindtap={() => {
-                                                setMemory(m.memoryID)
+                                                setSelectedMemory(m)
                                                 setMemoryDropdown(false)
                                             }}
                                         >
@@ -116,10 +222,10 @@ export function CreateChatDisplay() {
                     {/* Create Chat Button */}
                     <view className="form-actions">
                         <view
-                            className={`create-chat-btn${!folder || !chatTitle || !memory ? ' disabled' : ''}`}
-                            bindtap={(!folder || !chatTitle || !memory) ? undefined : handleCreateChat}
+                            className={`create-chat-btn${!selectedFolder || !chatTitle || !selectedMemory ? ' disabled' : ''}`}
+                            bindtap={(!selectedFolder || !chatTitle || !selectedMemory) ? undefined : handleCreateChat}
                         >
-                            <text>Create Chat</text>
+                            <text>Create</text>
                         </view>
                     </view>
                 </view>
