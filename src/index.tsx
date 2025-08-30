@@ -41,9 +41,9 @@ function SafeAreaWrapper({ children }: { children: ReactNode }) {
 
 function MainApp() {
   const { currentPage, params } = useNavigation();
-  const chatID = params?.chatID || "1";
-  const folderID = params?.folderID || "1";
-  const chatTitle = params?.chatTitle || "dummychat";
+  const chatID = params?.chatID || "";
+  const folderID = params?.folderID || "";
+  const chatTitle = params?.chatTitle || "";
 
   return (
     <view className="app-container">

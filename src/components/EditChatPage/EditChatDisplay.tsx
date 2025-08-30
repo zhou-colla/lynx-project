@@ -150,7 +150,7 @@ export function EditChatDisplay({ folderID, chatID, chatTitle }: EditChatDisplay
             await fetch(`${FIREBASE_DB}/folders/${originalFolder.folderID}/chats.json`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chats: filteredFolderChats }),
+                body: JSON.stringify(filteredFolderChats),
             });
 
             // Add chat to new folder
