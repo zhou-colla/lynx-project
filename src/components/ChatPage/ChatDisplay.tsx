@@ -25,8 +25,8 @@ export function ChatDisplay(props: { chatID: string }) {
   const [isReplying, setIsReplying] = useState(false);
   const [replyMessageText, setReplyMessageText] = useState("");
   const [chatInstance, setChatInstance] = useState<ChatHistory | null>(null);
-  const [message, setMessage] = useState('Ask me any question');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [placeholder, setPlaceholder] = useState('Ask me any question');
 
 useEffect(() => {
   const fetchChatHistory = async () => {
@@ -61,9 +61,10 @@ useEffect(() => {
     }
     
     if (!message.trim()) {
-      setMessage('Warning: Empty messages are not allowed');
+      setPlaceholder('⚠️ Empty messages are not allowed');
       return;
     }
+    setPlaceholder('')
 
     chatInstance.addUserMessage(message);
     setMessages([...chatInstance.getHistory()]); // update UI immediately
@@ -151,7 +152,7 @@ useEffect(() => {
         <view className="input-box-container">
           <input
             value={message}
-            placeholder={message}
+            placeholder={placeholder}   // if there’s an error, show it as placeholder
             bindinput={e => setMessage(e.detail.value)}
           />
           <view
