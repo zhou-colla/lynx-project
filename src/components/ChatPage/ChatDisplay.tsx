@@ -86,7 +86,7 @@ useEffect(() => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            contents: chatInstance.getHistory(),
+            contents: chatInstance.getPrompt(),
           }),
         }
       );
@@ -139,7 +139,8 @@ useEffect(() => {
                 <UserChatBubble text={msg.parts[0].text} />
               ) : (
                 <AssistantChatBubble 
-                  text={msg.parts[0].text} 
+                  text={msg.parts[0].text}
+                  chatInstance={chatInstance} 
                   setIsReplying={setIsReplying} 
                   setReplyMessageText={setReplyMessageText}/>
               )}
@@ -159,6 +160,8 @@ useEffect(() => {
               bindtap={() => {
                 setIsReplying(false);
                 setReplyMessageText("");
+                chatInstance?.setReplying(false);
+                
               }}
             />
           </view>

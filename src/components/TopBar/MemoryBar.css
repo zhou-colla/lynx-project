@@ -32,7 +32,6 @@
   color: white;
   font-size: 14px;
   white-space: nowrap;
-  /* overflow-y: auto; */
   text-overflow: ellipsis;
   flex: 1;
 }

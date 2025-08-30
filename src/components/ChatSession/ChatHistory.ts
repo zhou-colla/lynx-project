@@ -22,10 +22,24 @@ export default class ChatHistory {
     this.saveTitleIdToFirebase();
   }
 
+  private isReplying: boolean = false;
   private chatid: number = -1;
   private chattitle: string = '';
   private history: ChatEntry[] = [];
   private memory: Record<string, string> = {"1": "[This is for your background information, you do not have to explcily reply it] mood: happy, name: xingye, home: Mars"};
+  private replyMessage: ChatEntry = { role: 'user', parts: [{ text: '' }] };
+
+  setReplyMessage(message: string) {
+    this.replyMessage.parts[0].text = "[ The user is replying to: " + message + " ]";
+  }
+
+  setReplying(value: boolean) {
+    this.isReplying = value;
+  }
+
+  getReplyMessage(): ChatEntry {
+    return this.replyMessage;
+  }
 
   addUserMessage(message: string) {
     this.history.push({ role: 'user', parts: [{ text: message }] });
@@ -73,8 +87,12 @@ export default class ChatHistory {
       })
     );
 
+  if (this.isReplying) {
+  return [...memoryEntries, ...this.history, this.replyMessage];
+    }
+
   return [...memoryEntries, ...this.history];
-  }
+}
 
   async saveGlobalCounter(count: number) {
     const res = await fetch(`${FIREBASE_DB}/global_counter.json`, {
