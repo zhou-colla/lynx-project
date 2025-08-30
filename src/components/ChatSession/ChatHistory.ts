@@ -1,7 +1,5 @@
 import { FIREBASE_DB } from "../../Env.js";
 
-
-
 // ChatHistory.ts
 export interface ChatPart {
   text: string;
@@ -13,8 +11,6 @@ export interface ChatEntry {
 }
 
 export default class ChatHistory {
-
-
   constructor(chatid: number, chattitle: string) {
     this.chatid = chatid;
     this.chattitle = chattitle;
@@ -27,6 +23,11 @@ export default class ChatHistory {
 
   addUserMessage(message: string) {
     this.history.push({ role: 'user', parts: [{ text: message }] });
+    
+    // Auto-generate title from first user message if title is default
+    if (this.chattitle === `Chat ${this.chatid}` || this.chattitle === 'dummychat') {
+      this.chattitle = message.length > 30 ? message.substring(0, 30) + '...' : message;
+    }
   }
 
   addModelMessage(message: string) {
@@ -54,7 +55,6 @@ export default class ChatHistory {
     this.memory = {};
   }
 
-
   getHistory(): ChatEntry[] {
     return this.history;
   }
@@ -71,14 +71,30 @@ export default class ChatHistory {
       })
     );
 
-  return [...memoryEntries, ...this.history];
+    return [...memoryEntries, ...this.history];
+  }
+
+  getChatId(): number {
+    return this.chatid;
+  }
+
+  getChatTitle(): string {
+    return this.chattitle;
+  }
+
+  setChatTitle(title: string) {
+    this.chattitle = title;
   }
 
   async saveToFirebase() {
     await fetch(`${FIREBASE_DB}/chats/${this.chatid}.json`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ history: this.history, memory: this.memory }),
+      body: JSON.stringify({ 
+        title: this.chattitle,
+        history: this.history, 
+        memory: this.memory 
+      }),
     });
   }
 
@@ -88,11 +104,24 @@ export default class ChatHistory {
       const data = await res.json();
       this.history = data.history || [];
       this.memory = data.memory || {};
+      this.chattitle = data.title || `Chat ${this.chatid}`;
     } else {
       console.log("No data found for chat:", this.chatid);
     }
   }
 
-
+  // Static method to load chat metadata (just ID and title) for menu display
+  static async loadChatMetadata(chatId: number): Promise<{id: number, title: string} | null> {
+    const res = await fetch(`${FIREBASE_DB}/chats/${chatId}.json`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data) {
+        return {
+          id: chatId,
+          title: data.title || `Chat ${chatId}`
+        };
+      }
+    }
+    return null;
+  }
 }
-
