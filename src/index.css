@@ -17,14 +17,14 @@
 
 .menu-overlay {
   position: fixed;
-  top: 0;
+  top: 50px;
   right: 0;
   bottom: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.3); /* 半透明黑色背景 */
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
-  justify-content: flex-start; /* 菜单靠左 */
-  z-index: 1000; /* 保证覆盖在最上层 */
+  justify-content: flex-start;
+  z-index: 2000;
 }
 
 .menu-container {
