@@ -138,23 +138,21 @@ export function EditChatDisplay({ folderID, chatID, chatTitle }: EditChatDisplay
             // Remove chat from original folder
             const res = await fetch(`${FIREBASE_DB}/folders/${originalFolder.folderID}.json`);
             let folderData = await res.json();
-            if (folderData.chats) {
-                let chatKeyToDelete = null;
-                for (const [key, chat] of Object.entries(folderData.chats)) {
-                    const typedChat = chat as Chat;
-                    if (typedChat.chatID === chatID) {
-                        chatKeyToDelete = key;
-                        break;
-                    }
-                }
+            let folderChats = folderData.chats
+            const filteredFolderChats = folderChats.filter((chat: any) => (chat.id ?? chat.chatid ?? '').toString() !== chatID);
+            // delete all chats in the folder
+            await fetch(`${FIREBASE_DB}/folders/${originalFolder.folderID}/chats.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify([]),
+            });
+            // add back filtered chats to new folder
+            await fetch(`${FIREBASE_DB}/folders/${originalFolder.folderID}/chats.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chats: filteredFolderChats }),
+            });
 
-                // 3. Delete the chat if found
-                if (chatKeyToDelete) {
-                    await fetch(`${FIREBASE_DB}/folders/${folderID}/chats/${chatKeyToDelete}.json`, {
-                        method: "DELETE",
-                    });
-                }
-            }
             // Add chat to new folder
             const newFolderRes = await fetch(`${FIREBASE_DB}/folders/${selectedFolder.folderID}.json`);
             let newFolderData = await newFolderRes.json();
