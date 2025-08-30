@@ -33,7 +33,7 @@ interface NavigationProviderProps {
 }
 
 export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children }) => {
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState('createchat');
   const [params, setParams] = useState<any>(null);
 
   const navigate = (page: string, newParams?: any) => {
@@ -41,7 +41,7 @@ export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children
     setParams(newParams || null);
   };
 
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const openMenu = () => setIsMenuOpen(true);
   const closeMenu = () => setIsMenuOpen(false);
 
