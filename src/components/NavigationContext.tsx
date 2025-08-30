@@ -13,6 +13,8 @@ interface NavigationContextType {
   isMenuOpen: boolean;
   openMenu: () => void;
   closeMenu: () => void;
+  lastChatIdWhenMenuOpened: string;
+  navHandleDeleteChat: (id: string) => void;
 }
 
 // 2. Create context
@@ -54,7 +56,7 @@ export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children
   };
   const closeMenu = () => setIsMenuOpen(false);
 
-  const handleDeleteChat = (id: string) => {
+  const navHandleDeleteChat = (id: string) => {
     if (lastChatIdWhenMenuOpened === id) {
       navigate("createchat"); // menu still opening
     }
@@ -68,6 +70,8 @@ export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children
     isMenuOpen,
     openMenu,
     closeMenu,
+    lastChatIdWhenMenuOpened,
+    navHandleDeleteChat,
   };
 
   return (

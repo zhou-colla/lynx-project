@@ -16,7 +16,7 @@ interface ChatMetadata {
 
 export function MenuChat(props: { chatID: number, chatTitle: string, folderId: number, onDelete?: () => void}) {
     // when no folder, folderId = -1
-    const { navigate, closeMenu } = useNavigation();
+    const { navigate, closeMenu, navHandleDeleteChat } = useNavigation();
 
     const handleDeleteChat = async () => {
         // Delete chat from folder if it has one
@@ -41,6 +41,7 @@ export function MenuChat(props: { chatID: number, chatTitle: string, folderId: n
             method: "DELETE",
         });
         if (props.onDelete) props.onDelete();
+        navHandleDeleteChat(props.chatID.toString());
     };
 
     return (
