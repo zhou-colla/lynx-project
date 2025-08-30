@@ -24,7 +24,7 @@ export function EditChatDisplay({ folderID, chatID, chatTitle }: EditChatDisplay
     const [originalMemory, setOriginalMemory] = useState<Memory | null>(null)
     const [originalFolder, setOriginalFolder] = useState<Folder | null>(null)
 
-    const { navigate } = useNavigation();
+    const { navigate, openMenu } = useNavigation();
 
     // Load all folders and memories once
     useEffect(() => {
@@ -313,7 +313,7 @@ export function EditChatDisplay({ folderID, chatID, chatTitle }: EditChatDisplay
                         <view
                             className="cancel-chat-btn"
                             style={{ marginLeft: "12px", background: "#eee", color: "#333", padding: "8px 16px", borderRadius: "6px", cursor: "pointer", display: "block" }}
-                            bindtap={() => navigate('menudisplay')}
+                            bindtap={() => {navigate('createchat'); openMenu();}}
                         >
                             <text>Cancel</text>
                         </view>

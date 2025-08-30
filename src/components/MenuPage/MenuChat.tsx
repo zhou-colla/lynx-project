@@ -44,8 +44,20 @@ export function MenuChat(props: { chatID: number, chatTitle: string, folderId: n
     };
 
     return (
-        <view key={props.chatID} className="chat-item">
-            <text>{props.chatTitle}</text>
+        <view 
+            key={props.chatID} 
+            className="chat-item"
+        >
+            <view
+                className="text-container"
+                style={{ flex: 1 }}
+                bindtap={() => {
+                    navigate("chatdisplay", {chatID: props.chatID.toString()});
+                    closeMenu();
+                }}
+            >
+                <text>{props.chatTitle}</text>
+            </view>
             <view className="chat-options">
                 <view className="image-container">
                     <image

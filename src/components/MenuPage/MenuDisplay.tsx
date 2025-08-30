@@ -5,9 +5,6 @@ import { FIREBASE_DB } from '../../Env.js'
 
 import EditIcon from '../../assets/edit-icon.png';
 import DeleteIcon from '../../assets/delete-icon.png';
-import CrossIcon from '../../assets/cross-icon.png';
-import AddIcon from '../../assets/menu-add-icon.png';
-import MemoryIcon from '../../assets/memory-icon.png';
 
 import { MenuChat } from './MenuChat.js';
 
@@ -20,7 +17,7 @@ interface ChatMetadata {
 }
 
 export function MenuPage() {
-  const { navigate, setCurrentPage, closeMenu } = useNavigation();
+  const { setCurrentPage, closeMenu } = useNavigation();
 
   const [openFolder, setOpenFolder] = useState<number | null>(null)
   const [openMemory, setOpenMemory] = useState<string | null>('Default Memory')
@@ -37,10 +34,10 @@ export function MenuPage() {
     async function loadData() {
       const allFolders = await Folder.getAllFromFirebase()
       const allChatsData = await loadAllChatsFromFirebase()
-
+      
       setFolders(allFolders)
       setAllChats(allChatsData)
-
+      
       // Get all chat IDs that are assigned to folders
       const assignedChatIds = new Set<number>()
       allFolders.forEach(folder => {
@@ -48,7 +45,7 @@ export function MenuPage() {
           assignedChatIds.add(chat.id)
         })
       })
-
+      
       // Filter out chats that are already in folders
       const unassigned = allChatsData.filter(chat => !assignedChatIds.has(chat.id))
       setUnassignedChats(unassigned)
@@ -63,7 +60,7 @@ export function MenuPage() {
     while (existingIds.includes(nextFolderId)) {
       nextFolderId++
     }
-
+    
     const newFolderName = `Folder ${nextFolderId}`
     const newFolder = new Folder(nextFolderId, newFolderName)
 
@@ -109,12 +106,12 @@ export function MenuPage() {
 
   const handleRenameFolder = async (folderId: number) => {
     if (!renameValue.trim()) return
-
+    
     const folder = folders.find(f => f.id === folderId)
     if (!folder) return
 
     const updatedFolder = new Folder(folder.id, renameValue.trim(), folder.chats)
-
+    
     try {
       await updatedFolder.saveToFirebase()
       setFolders(folders.map(f => f.id === folderId ? updatedFolder : f))
@@ -135,15 +132,15 @@ export function MenuPage() {
     let loadedChats: ChatMetadata[] = [];
     let index = 1;
     let emptyCount = 0;
-
+    
     while (true) {
       const res = await fetch(`${FIREBASE_DB}/chats/${index}.json`, {
         method: "GET",
         headers: { "Content-Type": "application/json" }
       });
-
+      
       if (!res.ok) break;
-
+      
       const chatData = await res.json();
       if (!chatData || Object.keys(chatData).length === 0) {
         emptyCount++;
@@ -151,7 +148,7 @@ export function MenuPage() {
         index++;
         continue;
       }
-
+      
       // Use the actual chat title from Firebase, fallback to default
       const chatTitle = chatData.title || `Chat ${index}`;
       loadedChats.push({
@@ -160,7 +157,7 @@ export function MenuPage() {
       });
       index++;
     }
-
+    
     return loadedChats;
   }
 
@@ -171,37 +168,37 @@ export function MenuPage() {
     while (existingChatIds.includes(nextChatId)) {
       nextChatId++
     }
-
+    
     const newChat: ChatMetadata = {
       id: nextChatId,
       title: `New Chat ${nextChatId}`,
     }
-
+    
     // Add to unassigned chats
     setAllChats([...allChats, newChat])
     setUnassignedChats([...unassignedChats, newChat])
-
+    
     console.log(`Created new chat with ID ${nextChatId}`)
   }
 
   const assignChatToFolder = async (chatId: number, folderId: number) => {
     const chat = allChats.find(c => c.id === chatId)
     if (!chat) return
-
+    
     const folder = folders.find(f => f.id === folderId)
     if (!folder) return
-
+    
     // Add chat to folder
     const updatedChats = [...folder.chats, { id: chat.id, title: chat.title }]
     const updatedFolder = new Folder(folder.id, folder.name, updatedChats)
-
+    
     try {
       await updatedFolder.updateChatsInFirebase()
-
+      
       // Update local state
       setFolders(folders.map(f => f.id === folderId ? updatedFolder : f))
       setUnassignedChats(unassignedChats.filter(c => c.id !== chatId))
-
+      
       console.log(`Assigned chat ${chatId} to folder ${folderId}`)
     } catch (error) {
       console.error('Failed to assign chat to folder:', error)
@@ -212,35 +209,18 @@ export function MenuPage() {
     <view className="menu-container">
       <view className="menu-header">
         <text className="menu-title">Menu</text>
-        <image 
-          className="close-btn-img" 
-          src={CrossIcon} 
-          style={{ width: "25px", height: "25px" }}
-          bindtap={() => closeMenu()}
-        />
+        <view className="close-btn">✕</view>
       </view>
 
-      <view class="menu-actions">
-        <view class="menu-action" bindtap={() => {navigate("createchat"); closeMenu();}}>
-          <image
-              src={AddIcon}
-              style={{ width: "40px", height: "40px", marginRight: "5px" }}
-          />
-          <text>Create New Chat</text>
-        </view>
-        <view class="menu-action" bindtap={() => {navigate("memory"); closeMenu();}}>
-          <image
-              src={MemoryIcon}
-              style={{ width: "32px", height: "32px", marginLeft: "6px", marginRight: "8px" }}
-          />
-          <text>My Memory</text>
-        </view>
+      <view className="menu-actions">
+        <view className="menu-action" bindtap={handleCreateNewChat}>＋ New chat</view>
+        <view className="menu-action">🧠 My Memory</view>
       </view>
 
       <view className="menu-section">
         <scroll-view scroll-orientation="vertical" style={{ height: "100%", borderRadius: "10px" }}>
           <view className="chats-header">
-            <text className="section-title">Chats ({folders.length} folders, {allChats.length} total chats)</text>
+            <text className="section-title">Chats</text>
 
             {/* Show Done Renaming button when in rename mode */}
             {isRenameMode ? (
@@ -250,153 +230,125 @@ export function MenuPage() {
             ) : (
               <view className="edit-folder-container">
                 <view
-                  className="edit-folder"
-                  bindtap={() => setShowEditDropdown(!showEditDropdown)}
+                  className="add-folder-btn"
+                  bindtap={handleCreateNewFolder}
                 >
                   <image
-                    className="edit-folder__icon"
-                    src={require('../../assets/edit-icon.png')}
+                    className="add-folder-icon"
+                    src={EditIcon}
                   />
                 </view>
-                {showEditDropdown && (
-                  <view className="edit-dropdown-menu">
-                    <view className="edit-dropdown-item" bindtap={handleCreateNewFolder}>
-                      <text>➕ Add Folder</text>
-                    </view>
-                    <view className="edit-dropdown-divider"></view>
-                    <view className="edit-dropdown-item" bindtap={handleEnterRenameMode}>
-                      <text>✏️ Rename</text>
+                <view
+                  className="rename-folder-btn"
+                  bindtap={handleEnterRenameMode}
+                >
+                  <text className="rename-folder-text">Rename Folder</text>
+                </view>
+              </view>
+            )}
+        </view>
+        
+        {folders.map(folder => (
+          <view key={folder.id} className="folder">
+            <view className="folder-header">
+              <view
+                bindtap={() => {
+                  if (isRenameMode && renamingFolderId !== folder.id) {
+                    handleStartRename(folder.id, folder.name)
+                  } else if (!isRenameMode) {
+                    setOpenFolder(openFolder === folder.id ? null : folder.id)
+                  }
+                }}
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  flexGrow: 1,
+                  cursor: isRenameMode ? 'pointer' : 'default'
+                }}
+              >
+                {renamingFolderId === folder.id ? (
+                  <view className="rename-input-container">
+                    <input
+                      className="rename-input"
+                      value={renameValue}
+                      placeholder="Enter folder name"
+                      bindinput={(e: { detail: { value: string } }) => setRenameValue(e.detail.value)}
+                    />
+                    <view className="rename-actions">
+                      <view 
+                        className="rename-action rename-save" 
+                        bindtap={() => handleRenameFolder(folder.id)}
+                      >
+                        <text>✓</text>
+                      </view>
+                      <view 
+                        className="rename-action rename-cancel" 
+                        bindtap={handleCancelRename}
+                      >
+                        <text>✕</text>
+                      </view>
                     </view>
                   </view>
+                ) : (
+                  <>
+                    <text style={{ 
+                      color: isRenameMode ? '#3b82f6' : 'inherit',
+                      textDecoration: isRenameMode ? 'underline' : 'none'
+                    }}>
+                      {folder.name} ({folder.chats.length})
+                    </text>
+                    {!isRenameMode && (
+                      <text style={{ marginLeft: '8px' }}>{openFolder === folder.id ? '▾' : '▸'}</text>
+                    )}
+                    {isRenameMode && (
+                      <text style={{ marginLeft: '8px', fontSize: '12px', color: '#6b7280' }}>
+                        Click to rename
+                      </text>
+                    )}
+                  </>
+                )}
+              </view>
+              {renamingFolderId !== folder.id && !isRenameMode && (
+                <view
+                  className="chat-options"
+                  bindtap={() => handleDeleteFolder(folder.id)}
+                >
+                  <text>DELETE</text>
+                </view>
+              )}
+            </view>
+            {openFolder === folder.id && (
+              <view className="folder-chats">
+                {folder.chats.length === 0 ? (
+                  <text className="empty-text">No chats</text>
+                ) : (
+                  folder.chats.map(chat => (
+                    <MenuChat chatID={chat.id} chatTitle={chat.title} folderId={folder.id} />
+                  ))
                 )}
               </view>
             )}
           </view>
-
-          {folders.map(folder => (
-            <view key={folder.id} className="folder">
-              <view className="folder-header">
-                <view
-                  bindtap={() => {
-                    if (isRenameMode && renamingFolderId !== folder.id) {
-                      handleStartRename(folder.id, folder.name)
-                    } else if (!isRenameMode) {
-                      setOpenFolder(openFolder === folder.id ? null : folder.id)
-                    }
-                  }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    flexGrow: 1,
-                    cursor: isRenameMode ? 'pointer' : 'default'
-                  }}
-                >
-                  {renamingFolderId === folder.id ? (
-                    <view className="rename-input-container">
-                      <input
-                        className="rename-input"
-                        value={renameValue}
-                        placeholder="Enter folder name"
-                        bindinput={(e: { detail: { value: string } }) => setRenameValue(e.detail.value)}
-                      />
-                      <view className="rename-actions">
-                        <view
-                          className="rename-action rename-save"
-                          bindtap={() => handleRenameFolder(folder.id)}
-                        >
-                          <text>✓</text>
-                        </view>
-                        <view
-                          className="rename-action rename-cancel"
-                          bindtap={handleCancelRename}
-                        >
-                          <text>✕</text>
-                        </view>
-                      </view>
-                    </view>
-                  ) : (
-                    <>
-                      <text style={{
-                        color: isRenameMode ? '#3b82f6' : 'inherit',
-                        textDecoration: isRenameMode ? 'underline' : 'none'
-                      }}>
-                        {folder.name} ({folder.chats.length})
-                      </text>
-                      {!isRenameMode && (
-                        <text style={{ marginLeft: '8px' }}>{openFolder === folder.id ? '▾' : '▸'}</text>
-                      )}
-                      {isRenameMode && (
-                        <text style={{ marginLeft: '8px', fontSize: '12px', color: '#6b7280' }}>
-                          Click to rename
-                        </text>
-                      )}
-                    </>
-                  )}
-                </view>
-                {renamingFolderId !== folder.id && !isRenameMode && (
-                  <view
-                    className="chat-options"
-                    bindtap={() => handleDeleteFolder(folder.id)}
-                  >
-                    <text>DELETE</text>
-                  </view>
-                )}
-              </view>
-              {openFolder === folder.id && (
-                <view className="folder-chats">
-                  {folder.chats.length === 0 ? (
-                    <text className="empty-text">No chats</text>
-                  ) : (
-                    folder.chats.map(chat => (
-                      <MenuChat
-                        chatID={chat.id}
-                        chatTitle={chat.title}
-                        folderId={folder.id}
-                        onDelete={() => {
-                          // Remove chat from folder in local state
-                          setFolders(folders =>
-                            folders.map(f =>
-                              f.id === folder.id
-                                ? new Folder(f.id, f.name, f.chats.filter(c => c.id !== chat.id))
-                                : f
-                            )
-                          );
-                          // Remove chat from allChats and unassignedChats if needed
-                          setAllChats(allChats => allChats.filter(c => c.id !== chat.id));
-                          setUnassignedChats(unassignedChats => unassignedChats.filter(c => c.id !== chat.id));
-                        }} />
-                    ))
-                  )}
-                </view>
-              )}
+        ))}
+        
+        {/* Unassigned Chats Section */}
+        {unassignedChats.length > 0 && (
+          <view className="unassigned-section">
+            <view className="unassigned-header">
+              <text className="section-title">Unassigned Chats ({unassignedChats.length})</text>
             </view>
-          ))}
-
-          {/* Unassigned Chats Section */}
-          {unassignedChats.length > 0 && (
-            <view className="unassigned-section">
-              <view className="unassigned-header">
-                <text className="section-title">Unassigned Chats ({unassignedChats.length})</text>
-              </view>
-              {unassignedChats.map(chat => (
-                <MenuChat
-                  chatID={chat.id}
-                  chatTitle={chat.title}
-                  folderId={-1}
-                  onDelete={() => {
-                    setAllChats(allChats => allChats.filter(c => c.id !== chat.id));
-                    setUnassignedChats(unassignedChats => unassignedChats.filter(c => c.id !== chat.id));
-                  }} />
-              ))}
-            </view>
-          )}
-
-          {/* Debug info at bottom */}
-          <view style={{ padding: '20px', background: '#f0f0f0', margin: '20px', borderRadius: '8px' }}>
-            <text style={{ fontSize: '12px', color: '#666' }}>
-              Debug: Folders={folders.length}, Chats={allChats.length}, Unassigned={unassignedChats.length}
-            </text>
+            {unassignedChats.map(chat => (
+              <MenuChat chatID={chat.id} chatTitle={chat.title} folderId={-1} />
+            ))}
           </view>
+        )}
+        
+        {/* Debug info at bottom */}
+        <view style={{ padding: '20px', background: '#f0f0f0', margin: '20px', borderRadius: '8px' }}>
+          <text style={{ fontSize: '12px', color: '#666' }}>
+            Debug: Folders={folders.length}, Chats={allChats.length}, Unassigned={unassignedChats.length}
+          </text>
+        </view>
         </scroll-view>
       </view>
     </view>
