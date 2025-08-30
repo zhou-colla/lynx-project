@@ -172,7 +172,7 @@ export function EditChatDisplay({ folderID, chatID, chatTitle }: EditChatDisplay
             let folderData = await res.json();
             if (folderData.chats) {
                 folderData.chats = Object.values(folderData.chats).map((chat: any) => {
-                    if ((chat.chatID ?? chat.chatid ?? '').toString() === chatID) {
+                    if ((chat.id ?? chat.chatid ?? '').toString() === chatID) {
                         return {
                             ...chat,
                             title: editedTitle,
