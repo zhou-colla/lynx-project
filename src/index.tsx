@@ -12,6 +12,7 @@ import { Memory } from './components/MemoryPage/MemoryDisplay.js'
 import { ChatSession } from './components/ChatSession/ChatSession.jsx'
 import { MenuPage } from './components/MenuPage/MenuDisplay.jsx'
 import { CreateChatDisplay } from './components/CreateChatPage/CreateChatDisplay.jsx'
+import { EditChatDisplay } from './components/EditChatPage/EditChatDisplay.js';
 
 import './index.css'
 
@@ -41,6 +42,14 @@ function MainApp() {
     return <MenuPage />;
   } else if (currentPage === 'createchat') {
     return <CreateChatDisplay />;
+  } else if (currentPage === 'editchat') {
+    return (
+      <EditChatDisplay
+        folderID={params?.folderID || ""}
+        chatID={params?.chatID || ""}
+        chatTitle={params?.chatTitle || ""}
+      />
+    );
   }
 
   return <view><text>404 Page Not Found</text></view>;
