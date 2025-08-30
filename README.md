@@ -108,9 +108,6 @@ src/
 
 
 ---
-
-## License
-
 ## License
 
 © 2025 TeamFalcon (Xingye Zhou, Chai Yin, Sirui, Izzat).  
