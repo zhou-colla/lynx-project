@@ -1,11 +1,12 @@
 // ChatDisplay.tsx
-import { useEffect, useState } from '@lynx-js/react';
+import { useEffect, useState, useCallback } from '@lynx-js/react';
 import type { Dispatch, SetStateAction } from '@lynx-js/react';
 import { UserChatBubble } from './UserChatBubble.js';
 import { AssistantChatBubble } from './AssistantChatBubble.js';
 import { NavBar } from '../TopBar/NavBar.js';
 import { MemoryBar } from '../TopBar/MemoryBar.js';
 import CrossIcon from '../../assets/cross-icon.png'
+import { GEMINI_API_KEY } from "../../Env.js";
 import './Chat.css';
 
 // Import chat session
@@ -23,27 +24,26 @@ export function ChatDisplay(props: { chatID: string }) {
   const [isLoadingChatHistory, setIsLoadingChatHistory] = useState(true);
   const [isReplying, setIsReplying] = useState(false);
   const [replyMessageText, setReplyMessageText] = useState("");
-  const [input, setInput] = useState('Ask me any question');
+  const [chatInstance, setChatInstance] = useState<ChatHistory | null>(null);
+  const [message, setMessage] = useState('Ask me any question');
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    const fetchChatHistory = async () => {
-      try {
-        // Load chat from Firebase
-        // To Sirui: If you wanna test it change 1 below to chatID
-        const chatInstance = await ChatHistory.loadFromFirebase(1, "title");
-        const history = chatInstance.getHistory();
-        setMessages(history);
+useEffect(() => {
+  const fetchChatHistory = async () => {
+    try {
+      const instance = await ChatHistory.loadFromFirebase(1, "title");
+      setChatInstance(instance);
+      setMessages(instance.getHistory());
 
-        // Optionally set memoryID from static chat data (isn't this compulsory?)
-        const chat: Chat | undefined = chatData.chats.find((c: Chat) => c.chatID === props.chatID); 
-        if (chat) setMemoryID(chat.memoryID);
-      } catch (err) {
-        console.error("Failed to load chat history:", err);
-        setMessages([]);
-      } finally {
-        setIsLoadingChatHistory(false);
-      }
-    };
+      const chat: Chat | undefined = chatData.chats.find((c: Chat) => c.chatID === props.chatID); 
+      if (chat) setMemoryID(chat.memoryID);
+    } catch (err) {
+      console.error("Failed to load chat history:", err);
+      setMessages([]);
+    } finally {
+      setIsLoadingChatHistory(false);
+    }
+  };
 
     fetchChatHistory();
   }, [props.chatID]);
@@ -54,6 +54,53 @@ export function ChatDisplay(props: { chatID: string }) {
 
   const lastIndex : number = (messages.length)-1
  
+
+  const onSend = useCallback(async () => {
+    if (isLoadingChatHistory || !chatInstance) {
+      return;
+    }
+    
+    if (!message.trim()) {
+      setMessage('Warning: Empty messages are not allowed');
+      return;
+    }
+
+    chatInstance.addUserMessage(message);
+    setMessages([...chatInstance.getHistory()]); // update UI immediately
+
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: chatInstance.getHistory(),
+          }),
+        }
+      );
+
+      const data = await res.json();
+      console.log('Gemini raw response:', data);
+
+      const reply =
+        data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+        'No response from Gemini';
+    
+      chatInstance.addModelMessage(reply);
+      setMessages([...chatInstance.getHistory()]); // refresh UI
+      
+      await chatInstance.saveToFirebase();
+
+      setMessage('');
+    } catch (err) {
+      setMessage('Error: ' + (err as Error).message);
+    }
+  }, [chatInstance, message, isLoadingChatHistory]);
+
+
   return (
     <view>
       <NavBar />
@@ -103,11 +150,19 @@ export function ChatDisplay(props: { chatID: string }) {
         )}
         <view className="input-box-container">
           <input
-            value={input}
-            placeholder={input}
-            bindinput={e => setInput(e.detail.value)}
+            value={message}
+            placeholder={message}
+            bindinput={e => setMessage(e.detail.value)}
           />
+          <view
+            className="send-button"
+            bindtap={onSend}
+          >
+            <text className='send-button-text'>Send</text>
+          </view>
         </view>
+
+        
       </view>
     </view>
   );
