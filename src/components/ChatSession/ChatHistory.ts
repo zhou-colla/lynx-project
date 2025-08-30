@@ -87,7 +87,7 @@ export default class ChatHistory {
     const memoryEntries: ChatEntry[] = [
       {
         role: 'user',
-        parts: [{ text: `${this.memory.memoryName}: ${this.memory.content}` }]
+        parts: [{ text: `${this.memory.memoryName}: ${this.memory.content}, answer the following question in max 200 words` }]
       }
     ];
 
