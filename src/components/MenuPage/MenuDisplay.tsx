@@ -3,6 +3,9 @@ import './MenuDisplay.css'
 import { Folder } from './Folder.js'
 import { FIREBASE_DB } from '../../Env.js'
 
+import EditIcon from '../../assets/edit-icon.png';
+import DeleteIcon from '../../assets/delete-icon.png';
+
 interface ChatMetadata {
   id: number
   title: string
@@ -321,7 +324,12 @@ export function MenuPage() {
                   folder.chats.map(chat => (
                     <view key={chat.id} className="chat-item">
                       <text>{chat.title}</text>
-                      <view className="chat-options">⋮</view>
+                      <view className="chat-options">
+                        <view className="image-container">
+                          <image src={EditIcon} style={{ width: 60, height: 60, marginRight: 8}} />
+                          <image src={DeleteIcon} style={{ width: 60, height: 60 }} />
+                        </view>
+                      </view>
                     </view>
                   ))
                 )}
