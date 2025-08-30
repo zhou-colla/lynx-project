@@ -14,9 +14,34 @@ interface ChatMetadata {
     folderId?: number
 }
 
-export function MenuChat(props: { chatID: number, chatTitle: string, folderId: number }) {
+export function MenuChat(props: { chatID: number, chatTitle: string, folderId: number, onDelete?: () => void}) {
     // when no folder, folderId = -1
     const { navigate, closeMenu } = useNavigation();
+
+    const handleDeleteChat = async () => {
+        // Delete chat from folder if it has one
+        if (props.folderId !== undefined && props.folderId !== -1) {
+            // Fetch folder data
+            const folderRes = await fetch(`${FIREBASE_DB}/folders/${props.folderId}.json`);
+            const folderData = await folderRes.json();
+            // Remove chat from folder's chats
+            if (folderData.chats) {
+                folderData.chats = folderData.chats.filter((chat: any) =>
+                    (chat.id ?? chat.chatid ?? '').toString() !== props.chatID.toString()
+                );
+                await fetch(`${FIREBASE_DB}/folders/${props.folderId}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(folderData),
+                });
+            }
+        }
+        // Delete chat from chat table
+        await fetch(`${FIREBASE_DB}/chats/${props.chatID}.json`, {
+            method: "DELETE",
+        });
+        if (props.onDelete) props.onDelete();
+    };
 
     return (
         <view key={props.chatID} className="chat-item">
@@ -38,6 +63,7 @@ export function MenuChat(props: { chatID: number, chatTitle: string, folderId: n
                     <image
                         src={DeleteIcon}
                         style={{ width: "25px", height: "25px" }} /* can use the setUnassignedChats in MenuDisplay */
+                        bindtap={handleDeleteChat}
                     />
                 </view>
             </view>
