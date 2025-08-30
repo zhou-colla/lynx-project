@@ -36,22 +36,24 @@ export function ChatDisplay(props: { chatID: string }) {
     }
   );
 
-useEffect(() => {
-  const fetchChatHistory = async () => {
-    try {
-      const instance = await ChatHistory.loadFromFirebase(1, "title");
-      setChatInstance(instance);
-      setMessages(instance.getHistory());
+  useEffect(() => {
+    const fetchChatHistory = async () => {
+      try {
+        const chatIdNum = parseInt(props.chatID);
+        const chatInstance = await ChatHistory.loadFromFirebase(chatIdNum, "title");
+        setChatInstance(chatInstance);
+        setMessages(chatInstance.getHistory());
+        setMemoryID(chatInstance.getMemory().id);
 
-      const chat: Chat | undefined = chatData.chats.find((c: Chat) => c.chatID === props.chatID); 
-      if (chat) setMemoryID(chat.memoryID);
-    } catch (err) {
-      console.error("Failed to load chat history:", err);
-      setMessages([]);
-    } finally {
-      setIsLoadingChatHistory(false);
-    }
-  };
+        const chat: Chat | undefined = chatData.chats.find((c: Chat) => c.chatID === props.chatID);
+        if (chat) setMemoryID(chat.memoryID);
+      } catch (err) {
+        console.error("Failed to load chat history:", err);
+        setMessages([]);
+      } finally {
+        setIsLoadingChatHistory(false);
+      }
+    };
 
     fetchChatHistory();
   }, [props.chatID]);
@@ -60,14 +62,14 @@ useEffect(() => {
     return <text className="centered-text">Loading chat history...</text>;
   } // newly added
 
-  const lastIndex : number = (messages.length)-1
- 
+  const lastIndex: number = (messages.length) - 1
+
 
   const onSend = useCallback(async () => {
     if (isLoadingChatHistory || !chatInstance) {
       return;
     }
-    
+
     if (!message.trim()) {
       setPlaceholder('⚠️ Empty messages are not allowed');
       return;
@@ -97,10 +99,10 @@ useEffect(() => {
       const reply =
         data?.candidates?.[0]?.content?.parts?.[0]?.text ||
         'No response from Gemini';
-    
+
       chatInstance.addModelMessage(reply);
       setMessages([...chatInstance.getHistory()]); // refresh UI
-      
+
       await chatInstance.saveToFirebase();
 
       setMessage('');
@@ -114,39 +116,39 @@ useEffect(() => {
     <view className="page-container">
       <NavBar />
       <MemoryBar memoryID={memoryID} setMemoryID={setMemoryID} />
-      <view className="dialog-display-and-input" 
+      <view className="dialog-display-and-input"
         style={{
-        marginBottom: `${keyboardHeight}px`
+          marginBottom: `${keyboardHeight}px`
         }}
       >
-        <list 
-        className="dialog-display"
-        scroll-orientation="vertical"
-        initial-scroll-index={lastIndex}
-      >
-        {messages.length === 0 ? (
-          <list-item item-key="empty">
-            <text className="centered-text">What can I help with</text>
-          </list-item>
-        ) : (
-          messages.map((msg: ChatEntry, index) => (
-            <list-item 
-              key={index}
-              item-key={index.toString()}
-              className="dialog-list-item"
-            >
-              {msg.role === "user" ? (
-                <UserChatBubble text={msg.parts[0].text} />
-              ) : (
-                <AssistantChatBubble 
-                  text={msg.parts[0].text}
-                  chatInstance={chatInstance} 
-                  setIsReplying={setIsReplying} 
-                  setReplyMessageText={setReplyMessageText}/>
-              )}
+        <list
+          className="dialog-display"
+          scroll-orientation="vertical"
+          initial-scroll-index={lastIndex}
+        >
+          {messages.length === 0 ? (
+            <list-item item-key="empty">
+              <text className="centered-text">What can I help with</text>
             </list-item>
-          ))
-        )}
+          ) : (
+            messages.map((msg: ChatEntry, index) => (
+              <list-item
+                key={index}
+                item-key={index.toString()}
+                className="dialog-list-item"
+              >
+                {msg.role === "user" ? (
+                  <UserChatBubble text={msg.parts[0].text} />
+                ) : (
+                  <AssistantChatBubble
+                    text={msg.parts[0].text}
+                    chatInstance={chatInstance}
+                    setIsReplying={setIsReplying}
+                    setReplyMessageText={setReplyMessageText} />
+                )}
+              </list-item>
+            ))
+          )}
         </list>
         {/* Let the optional text only show the first five line and scrollable*/}
         {isReplying && (
@@ -154,14 +156,14 @@ useEffect(() => {
             <scroll-view className="optional-text">
               <text>{replyMessageText}</text>
             </scroll-view>
-            <image 
-              src={CrossIcon} 
+            <image
+              src={CrossIcon}
               className="close-reply-icon"
               bindtap={() => {
                 setIsReplying(false);
                 setReplyMessageText("");
                 chatInstance?.setReplying(false);
-                
+
               }}
             />
           </view>
