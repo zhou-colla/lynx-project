@@ -21,13 +21,11 @@ function MenuOverlay() {
   if (!isMenuOpen) return null;
 
   return (
-    <view className="menu-overlay" bindtap={closeMenu}>
-      <view
-        className="menu-container"
-        bindtap={(e) => e.stopPropagation()} // 阻止冒泡，点击菜单本身不会关闭
-      >
+    <view className="menu-overlay">
+      <view className="menu-container">
         <MenuPage />
       </view>
+      <view className="menu-backdrop" bindtap={closeMenu}></view>
     </view>
   );
 }

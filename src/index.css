@@ -17,16 +17,16 @@
 
 .menu-overlay {
   position: fixed;
-  top: 50px;
+  top: 50px;   /* 你原本的值 */
   right: 0;
   bottom: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.3);
   display: flex;
-  justify-content: flex-start;
+  flex-direction: row;
   z-index: 2000;
 }
 
+/* 左边菜单 */
 .menu-container {
   width: 260px;
   height: 100%;
@@ -36,4 +36,10 @@
   flex-direction: column;
   font-family: sans-serif;
   overflow-y: auto;
+}
+
+/* 右边透明遮罩 */
+.menu-backdrop {
+  flex: 1; /* 占满剩下的空间 */
+  background: rgba(0, 0, 0, 0.3);
 }
