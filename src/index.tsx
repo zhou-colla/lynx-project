@@ -11,6 +11,7 @@ import { ChatDisplay } from './components/ChatPage/ChatDisplay.jsx'
 import { Memory } from './components/MemoryPage/MemoryDisplay.js'
 import { ChatSession } from './components/ChatSession/ChatSession.jsx'
 import { MenuPage } from './components/MenuPage/MenuDisplay.jsx'
+import { CreateChatDisplay } from './components/CreateChatPage/CreateChatDisplay.jsx'
 
 import './index.css'
 
@@ -37,6 +38,8 @@ function MainApp() {
     return <ChatSession />;
   } else if (currentPage === 'menudisplay') {
     return <MenuPage />;
+  } else if (currentPage === 'createchat') {
+    return <CreateChatDisplay />;
   }
 
   return <view><text>404 Page Not Found</text></view>;
