@@ -88,13 +88,21 @@ For detailed instructions on installing dependencies, running the app, and using
 ## Folder Structure
 Folder Structure
 src/
+
 ├── components/   # UI components for chats, folders, memories, navigation, etc.
+
 ├── data/         # Type definitions
+
 ├── assets/       # Icons and images
+
 ├── services/     # API and backend logic
+
 ├── tests/        # Unit tests
+
 ├── App.tsx       # Main app entry point
+
 ├── index.tsx     # App bootstrap
+
 └── ...           # Other supporting files
 
 
