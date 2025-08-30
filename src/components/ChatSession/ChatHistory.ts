@@ -76,7 +76,7 @@ export default class ChatHistory {
   return [...memoryEntries, ...this.history];
   }
 
-  async saveGlobalCounter(count: number) {
+  static async saveGlobalCounter(count: number) {
     const res = await fetch(`${FIREBASE_DB}/global_counter.json`, {
       method: 'PUT', // PUT overwrites the value
       headers: { 'Content-Type': 'application/json' },
@@ -118,24 +118,24 @@ export default class ChatHistory {
   }
 
   // // Add this method inside your ChatHistory class
-  // static async getGlobalCounter(): Promise<number> {
-  //   try {
-  //     const res = await fetch(`${FIREBASE_DB}/global_counter.json`);
+  static async getGlobalCounter(): Promise<number> {
+    try {
+      const res = await fetch(`${FIREBASE_DB}/global_counter.json`);
       
-  //     // Handle Firebase's "null" response for non-existing data
-  //     if (res.status === 200) {
-  //       const data = await res.json();
-  //       return data === null ? 0 : data;
-  //     }
+      // Handle Firebase's "null" response for non-existing data
+      if (res.status === 200) {
+        const data = await res.json();
+        return data === null ? 0 : data;
+      }
       
-  //     // Handle actual errors (404, network issues, etc)
-  //     console.error('Failed to fetch global counter', res.status, await res.text());
-  //     return 0;
-  //   } catch (error) {
-  //     console.error('Network error fetching global counter', error);
-  //     return 0;
-  //   }
-  // }
+      // Handle actual errors (404, network issues, etc)
+      console.error('Failed to fetch global counter', res.status, await res.text());
+      return 0;
+    } catch (error) {
+      console.error('Network error fetching global counter', error);
+      return 0;
+    }
+  }
 
 
 }
