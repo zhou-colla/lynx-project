@@ -42,6 +42,8 @@ function SafeAreaWrapper({ children }: { children: ReactNode }) {
 function MainApp() {
   const { currentPage, params } = useNavigation();
   const chatID = params?.chatID || "1";
+  const folderID = params?.folderID || "1";
+  const chatTitle = params?.chatTitle || "dummychat";
 
   return (
     <view className="app-container">
@@ -50,6 +52,7 @@ function MainApp() {
       {currentPage === "memory" && <Memory />}
       {currentPage === "chatsession" && <ChatSession />}
       {currentPage === "createchat" && <CreateChatDisplay />}
+      {currentPage === "editchat" && <EditChatDisplay folderID={folderID} chatID={chatID} chatTitle={chatTitle} />}
       <MenuOverlay />
     </view>
   );
