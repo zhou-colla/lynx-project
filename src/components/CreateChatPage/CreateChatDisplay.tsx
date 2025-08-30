@@ -116,9 +116,9 @@ export function CreateChatDisplay() {
             chatTitle,
             [],
             {
-                id: memoryID ?? "0",
-                title: memoryName ?? "",
-                value: memoryContent ?? ""
+                memoryID: memoryID ?? "0",
+                memoryName: memoryName ?? "",
+                content: memoryContent ?? ""
             }
         );
         await newChat.saveToFirebase();
