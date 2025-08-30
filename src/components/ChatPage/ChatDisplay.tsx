@@ -6,7 +6,7 @@ import { AssistantChatBubble } from './AssistantChatBubble.js';
 import { NavBar } from '../TopBar/NavBar.js';
 import { MemoryBar } from '../TopBar/MemoryBar.js';
 import CrossIcon from '../../assets/cross-icon.png';
-import { GEMINI_API_KEY } from "../../Env.js";
+import { GEMINI_API_KEY, FIREBASE_DB } from "../../Env.js";
 import './Chat.css';
 
 // Import chat session
@@ -32,6 +32,25 @@ export function ChatDisplay(props: { chatID: string }) {
     }
   );
 
+    useEffect(() => {
+      const initChat = async () => {
+        try {
+
+          const res = await fetch(`${FIREBASE_DB}/memories/${memoryID}.json`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+          });
+          const memory = await res.json();
+          chatInstance?.setMemory(memoryID, memory?.memoryName || "", memory?.content || "");
+          await chatInstance?.saveToFirebase()
+        } catch (error) {
+          console.error("Failed to fetch memory from database:", error);
+        } 
+      };
+  
+      initChat();
+    }, [memoryID]);
+  
   useEffect(() => {
     const fetchChatHistory = async () => {
       try {
@@ -39,9 +58,7 @@ export function ChatDisplay(props: { chatID: string }) {
         const chatInstance = await ChatHistory.loadFromFirebase(chatIdNum, "title");
         setChatInstance(chatInstance);
         setMessages(chatInstance.getHistory());
-        setMemoryID(chatInstance.getMemory().id);
-
-
+        setMemoryID(chatInstance.getMemory().memoryID);
       } catch (err) {
         console.error("Failed to load chat history:", err);
         setMessages([]);
