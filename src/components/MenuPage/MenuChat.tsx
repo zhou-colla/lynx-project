@@ -62,7 +62,7 @@ export function MenuChat(props: { chatID: number, chatTitle: string, folderId: n
                 <view className="image-container">
                     <image
                         src={EditIcon}
-                        style={{ width: "25px", height: "25px", marginRight: "8px" }}
+                        style={{ width: "20px", height: "20px", marginRight: "8px" }}
                         bindtap={() => {
                             navigate("editchat", {
                                 folderID: props.folderId !== undefined ? props.folderId.toString() : "",
@@ -74,7 +74,7 @@ export function MenuChat(props: { chatID: number, chatTitle: string, folderId: n
                     />
                     <image
                         src={DeleteIcon}
-                        style={{ width: "25px", height: "25px" }} /* can use the setUnassignedChats in MenuDisplay */
+                        style={{ width: "20px", height: "20px" }} /* can use the setUnassignedChats in MenuDisplay */
                         bindtap={handleDeleteChat}
                     />
                 </view>

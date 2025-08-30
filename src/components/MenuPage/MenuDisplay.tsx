@@ -8,6 +8,7 @@ import DeleteIcon from '../../assets/delete-icon.png';
 import CrossIcon from '../../assets/cross-icon.png';
 import AddIcon from '../../assets/menu-add-icon.png';
 import MemoryIcon from '../../assets/memory-icon.png';
+import AddFolderIcon from '../../assets/add-folder-icon.png';
 
 import { MenuChat } from './MenuChat.js';
 
@@ -250,19 +251,18 @@ export function MenuPage() {
             ) : (
               <view className="edit-folder-container">
                 <view
-                  className="add-folder-btn"
-                  bindtap={handleCreateNewFolder}
-                >
-                  <image
-                    className="add-folder-icon"
-                    src={EditIcon}
-                  />
-                </view>
-                <view
                   className="rename-folder-btn"
                   bindtap={handleEnterRenameMode}
                 >
                   <text className="rename-folder-text">Rename Folder</text>
+                </view>
+                <view
+                  bindtap={handleCreateNewFolder}
+                >
+                  <image
+                    className="add-folder-icon"
+                    src={AddFolderIcon}
+                  />
                 </view>
               </view>
             )}
@@ -330,10 +330,10 @@ export function MenuPage() {
               </view>
               {renamingFolderId !== folder.id && !isRenameMode && (
                 <view
-                  className="chat-options"
+                  className="rename-folder-btn"
                   bindtap={() => handleDeleteFolder(folder.id)}
                 >
-                  <text>DELETE</text>
+                  <text className="rename-folder-text">Delete</text>
                 </view>
               )}
             </view>
@@ -362,55 +362,8 @@ export function MenuPage() {
             ))}
           </view>
         )}
-        
-        {/* Debug info at bottom */}
-        <view style={{ padding: '20px', background: '#f0f0f0', margin: '20px', borderRadius: '8px' }}>
-          <text style={{ fontSize: '12px', color: '#666' }}>
-            Debug: Folders={folders.length}, Chats={allChats.length}, Unassigned={unassignedChats.length}
-          </text>
-        </view>
         </scroll-view>
       </view>
     </view>
   )
 }
-
-/* Original unassigned chats
-{unassignedChats.length > 0 && (
-          <view className="unassigned-section">
-            <view className="unassigned-header">
-              <text className="section-title">Unassigned Chats ({unassignedChats.length})</text>
-            </view>
-            {unassignedChats.map(chat => (
-              <view key={chat.id} className="chat-item unassigned-chat">
-                <text>{chat.title}</text>
-                <view className="chat-options">
-                  <view 
-                    className="dropdown-trigger"
-                    bindtap={() => setOpenDropdown(openDropdown === chat.id ? null : chat.id)}
-                  >
-                    <text>Move ▾</text>
-                  </view>
-                  {openDropdown === chat.id && (
-                    <view className="dropdown-menu">
-                      {folders.map(folder => (
-                        <view 
-                          key={folder.id} 
-                          className="dropdown-item"
-                          bindtap={() => {
-                            assignChatToFolder(chat.id, folder.id)
-                            setOpenDropdown(null)
-                          }}
-                        >
-                          <text>{folder.name}</text>
-                        </view>
-                      ))}
-                    </view>
-                  )}
-                </view>
-              </view>
-            ))}
-          </view>
-        )}
-
- */

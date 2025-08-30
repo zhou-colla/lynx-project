@@ -153,8 +153,9 @@
 }
 
 .add-folder-icon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
+  margin-left: 8px;
 }
 
 .rename-folder-btn {
@@ -207,7 +208,7 @@
   cursor: pointer;
   padding: 6px 12px;
   border-radius: 6px;
-  background: #10b981;
+  background: #385542;
   border: none;
   transition: background-color 0.15s ease;
 }
@@ -284,7 +285,7 @@
 }
 
 .rename-input:focus {
-  border-color: #3b82f6;
+  border-color: #385542;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
 }
 
@@ -307,7 +308,7 @@
 }
 
 .rename-save {
-  background: #10b981;
+  background: #B4C2A8;
   color: white;
 }
 
@@ -317,7 +318,7 @@
 }
 
 .rename-cancel {
-  background: #ef4444;
+  background: #E7C3C3;
   color: white;
 }
 
