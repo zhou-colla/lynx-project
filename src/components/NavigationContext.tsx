@@ -35,15 +35,30 @@ interface NavigationProviderProps {
 export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children }) => {
   const [currentPage, setCurrentPage] = useState('home');
   const [params, setParams] = useState<any>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [lastChatIdWhenMenuOpened, setLastChatIdWhenMenuOpened] = useState<string>("");
 
   const navigate = (page: string, newParams?: any) => {
     setCurrentPage(page);
     setParams(newParams || null);
   };
 
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
-  const openMenu = () => setIsMenuOpen(true);
+  
+  const openMenu = () => {
+    if (currentPage === "chatdisplay") {
+      setLastChatIdWhenMenuOpened(params?.chatID || "");
+    } else {
+      setLastChatIdWhenMenuOpened("");
+    }
+    setIsMenuOpen(true);
+  };
   const closeMenu = () => setIsMenuOpen(false);
+
+  const handleDeleteChat = (id: string) => {
+    if (lastChatIdWhenMenuOpened === id) {
+      navigate("createchat"); // menu still opening
+    }
+  };
 
   const value: NavigationContextType = { 
     currentPage,
