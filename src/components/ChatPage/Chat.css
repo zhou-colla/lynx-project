@@ -81,3 +81,12 @@
   /* Optional: Add a top margin for spacing */
   margin-top: 50px; 
 }
+
+.send-button {
+  padding: 0 15px;
+  background-color: #000000;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
