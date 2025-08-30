@@ -9,6 +9,7 @@ import CrossIcon from '../../assets/cross-icon.png';
 import { GEMINI_API_KEY, FIREBASE_DB } from "../../Env.js";
 import './Chat.css';
 
+
 // Import chat session
 import ChatHistory from '../ChatSession/ChatHistory.js';
 import type { ChatEntry } from '../ChatSession/ChatHistory.js';
@@ -21,8 +22,8 @@ export function ChatDisplay(props: { chatID: string }) {
   const [isReplying, setIsReplying] = useState(false);
   const [replyMessageText, setReplyMessageText] = useState("");
   const [chatInstance, setChatInstance] = useState<ChatHistory | null>(null);
-  const [message, setMessage] = useState('');
-  const [placeholder, setPlaceholder] = useState('Ask me any question');
+  const [message, setMessage] = useState("");
+  const [placeholder, setPlaceholder] = useState("Ask me any question");
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   useLynxGlobalEventListener(
@@ -77,6 +78,13 @@ export function ChatDisplay(props: { chatID: string }) {
   const lastIndex: number = (messages.length) - 1
 
 
+  const resetInputText = (e?: any) => {
+    setMessage('');
+    setPlaceholder('Ask me any question');
+    
+    console.log("message value:" + message)
+  };
+
   const onSend = useCallback(async () => {
     if (isLoadingChatHistory || !chatInstance) {
       return;
@@ -114,12 +122,11 @@ export function ChatDisplay(props: { chatID: string }) {
 
       chatInstance.addModelMessage(reply);
       setMessages([...chatInstance.getHistory()]); // refresh UI
-
+      setMessage(''); // Clear input after successful response
       await chatInstance.saveToFirebase();
-
-      setMessage('');
     } catch (err) {
-      setMessage('Error: ' + (err as Error).message);
+      console.error('Error:', err);
+      setMessage(''); // Also clear input on error
     }
   }, [chatInstance, message, isLoadingChatHistory]);
 
@@ -181,11 +188,12 @@ export function ChatDisplay(props: { chatID: string }) {
           </view>
         )}
         <view className="input-box-container">
-          <input
-            value={message}
-            placeholder={placeholder}
-            bindinput={e => setMessage(e.detail.value)}
-          />
+            <input
+              key={message === "" ? "empty" : "filled"}
+              value={message}
+              bindinput={e => setMessage(e.detail.value)}
+              placeholder="Type something..."
+            />
           <view
             className="send-button"
             bindtap={onSend}
@@ -197,3 +205,4 @@ export function ChatDisplay(props: { chatID: string }) {
     </view>
   );
 }
+
