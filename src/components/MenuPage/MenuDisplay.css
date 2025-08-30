@@ -239,34 +239,6 @@
   background: #f3f4f6;
 }
 
-/* Scrollbar Styling - Touch Friendly */
-.menu-section {
-  /* Enable smooth scrolling on touch devices */
-
-}
-
-.dropdown-menu {
-  /* Enable smooth scrolling on touch devices */
-
-
-}
-
-/* Hide scrollbars but keep scrolling functionality */
-/* .menu-section::-webkit-scrollbar,
-.dropdown-menu::-webkit-scrollbar {
-  display: none;
-} */
-
-.menu-section {
-  /* For Firefox */
-
-}
-
-.dropdown-menu {
-  /* For Firefox */
-
-}
-
 /* Add scroll indicators for better UX on touch */
 .menu-section::before {
   content: '';

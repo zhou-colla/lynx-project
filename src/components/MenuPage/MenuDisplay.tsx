@@ -163,11 +163,12 @@ export function MenuPage() {
       </view>
 
       <view className="menu-section">
-        <view className="chats-header">
-          <text className="section-title">Chats ({folders.length} folders, {allChats.length} total chats)</text>
-          <view className="add-folder" bindtap={handleCreateNewFolder}>
-            <image
-              className="add-folder__icon"
+        <scroll-view scroll-orientation="vertical" style={{ height: "100%", borderRadius: "10px" }}>
+          <view className="chats-header">
+            <text className="section-title">Chats ({folders.length} folders, {allChats.length} total chats)</text>
+            <view className="add-folder" bindtap={handleCreateNewFolder}>
+              <image
+                className="add-folder__icon"
               src={require('../../assets/add-icon-circle.png')}
             />
           </view>
@@ -250,6 +251,7 @@ export function MenuPage() {
             Debug: Folders={folders.length}, Chats={allChats.length}, Unassigned={unassignedChats.length}
           </text>
         </view>
+        </scroll-view>
       </view>
     </view>
   )
