@@ -41,12 +41,13 @@ function SafeAreaWrapper({ children }: { children: ReactNode }) {
 }
 
 function MainApp() {
-  const { currentPage } = useNavigation();
+  const { currentPage, params } = useNavigation();
+  const chatID = params?.chatID || "1";
 
   return (
     <view className="app-container">
       {currentPage === "home" && <App />}
-      {currentPage === "chatdisplay" && <ChatDisplay chatID="chat-1" />}
+      {currentPage === "chatdisplay" && <ChatDisplay chatID={chatID} />}
       {currentPage === "memory" && <Memory />}
       {currentPage === "chatsession" && <ChatSession />}
       {currentPage === "createchat" && <CreateChatDisplay />}
