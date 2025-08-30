@@ -131,19 +131,58 @@
   color: #374151;
 }
 
-/* Edit Folder Dropdown Styles */
-.edit-folder-container {
-  position: relative;
-}
-
-.edit-folder {
+/* Add new button styles */
+.add-folder-btn,
+.rename-folder-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
-  padding: 6px;
-  border-radius: 4px;
-  background: #e5e7eb;
+  padding: 6px 12px;
+  border-radius: 6px;
   border: 1px solid #d1d5db;
+  transition: all 0.15s ease;
+}
+
+.add-folder-btn {
+  background: #e5e7eb;
+}
+
+.add-folder-btn:hover {
+  background: #d1d5db;
+}
+
+.add-folder-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.rename-folder-btn {
+  background: #e5e7eb;
+  margin-left: 8px; /* Spacing between the buttons */
+}
+
+.rename-folder-btn:hover {
+  background: #d1d5db;
+}
+
+.rename-folder-text {
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Update the container to use flexbox for proper alignment */
+.edit-folder-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Remove old dropdown styles that are no longer needed */
+.edit-folder,
+.edit-dropdown-menu,
+.edit-dropdown-item {
+  display: none;
 }
 
 .edit-folder:hover {
