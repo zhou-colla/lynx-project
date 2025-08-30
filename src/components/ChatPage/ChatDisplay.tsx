@@ -150,7 +150,9 @@ useEffect(() => {
         {/* Let the optional text only show the first five line and scrollable*/}
         {isReplying && (
           <view className="optional-reply-bar">
-            <text className="optional-text">{replyMessageText}</text>
+            <scroll-view className="optional-text">
+              <text>{replyMessageText}</text>
+            </scroll-view>
             <image 
               src={CrossIcon} 
               className="close-reply-icon"
@@ -174,8 +176,6 @@ useEffect(() => {
             <text className='send-button-text'>Send</text>
           </view>
         </view>
-
-        
       </view>
     </view>
   );

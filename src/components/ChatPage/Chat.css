@@ -47,10 +47,33 @@
 }
 
 .input-box-container {
+  /* This is a flex container, so it can control the alignment of its children */
+  display: flex;
   flex-shrink: 0;
   height: 50px;
-  padding: 10px;
+  /* Reduced vertical padding to decrease the gap */
+  padding: 5px 10px;
   background-color: white;
+  /* Align items vertically in the center */
+  align-items: center;
+  /* Add some space between the input field and the send button */
+  gap: 10px;
+}
+
+.input-box-container input {
+  /* Take up all available space in the container */
+  flex-grow: 1;
+  height: 40px;
+}
+
+.send-button {
+  padding: 0 15px;
+  height: 40px; /* Make the button the same height as the input */
+  background-color: #000000;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .assistant-bubble {
@@ -86,13 +109,4 @@
   align-self: center;
   /* Optional: Add a top margin for spacing */
   margin-top: 50px; 
-}
-
-.send-button {
-  padding: 0 15px;
-  background-color: #000000;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
