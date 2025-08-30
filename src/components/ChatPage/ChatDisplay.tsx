@@ -116,7 +116,7 @@ useEffect(() => {
       <MemoryBar memoryID={memoryID} setMemoryID={setMemoryID} />
       <view className="dialog-display-and-input" 
         style={{
-        height: keyboardHeight > 0 ? `calc(100vh - ${keyboardHeight+100}px)` : "calc(100vh - 100px)"
+        marginBottom: `${keyboardHeight}px`
         }}
       >
         <list 
