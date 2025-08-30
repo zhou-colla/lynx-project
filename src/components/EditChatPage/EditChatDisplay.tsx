@@ -17,7 +17,7 @@ export function EditChatDisplay({ folderID, chatID, chatTitle }: EditChatDisplay
     const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
     const [folderDropdown, setFolderDropdown] = useState(false)
     const [editedTitle, setEditedTitle] = useState<string>(chatTitle)
-    const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null)
+    const [selectedMemory, setSelectedMemory] = useState<Memory>(defaultMemory)
     const [memoryDropdown, setMemoryDropdown] = useState(false)
     const [availableMemories, setAvailableMemories] = useState<Memory[]>([])
     const [availableFolders, setAvailableFolders] = useState<Folder[]>([])
@@ -139,22 +139,29 @@ export function EditChatDisplay({ folderID, chatID, chatTitle }: EditChatDisplay
             const res = await fetch(`${FIREBASE_DB}/folders/${originalFolder.folderID}.json`);
             let folderData = await res.json();
             if (folderData.chats) {
-                folderData.chats = Object.values(folderData.chats).filter((chat: any) => (chat.chatID ?? chat.chatid ?? '').toString() !== chatID);
-                await fetch(`${FIREBASE_DB}/folders/${originalFolder.folderID}.json`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(folderData),
-                });
+                let chatKeyToDelete = null;
+                for (const [key, chat] of Object.entries(folderData.chats)) {
+                    const typedChat = chat as Chat;
+                    if (typedChat.chatID === chatID) {
+                        chatKeyToDelete = key;
+                        break;
+                    }
+                }
+
+                // 3. Delete the chat if found
+                if (chatKeyToDelete) {
+                    await fetch(`${FIREBASE_DB}/folders/${folderID}/chats/${chatKeyToDelete}.json`, {
+                        method: "DELETE",
+                    });
+                }
             }
             // Add chat to new folder
             const newFolderRes = await fetch(`${FIREBASE_DB}/folders/${selectedFolder.folderID}.json`);
             let newFolderData = await newFolderRes.json();
             if (!newFolderData.chats) newFolderData.chats = [];
             newFolderData.chats.push({
-                chatid: chatID,
-                chattitle: editedTitle,
-                memoryid: selectedMemory?.memoryID || "",
-                messages: []
+                id: chatID,
+                title: editedTitle,
             });
             await fetch(`${FIREBASE_DB}/folders/${selectedFolder.folderID}.json`, {
                 method: "PUT",
@@ -171,7 +178,6 @@ export function EditChatDisplay({ folderID, chatID, chatTitle }: EditChatDisplay
                         return {
                             ...chat,
                             title: editedTitle,
-                            memory: selectedMemory
                         };
                     }
                     return chat;
@@ -185,15 +191,12 @@ export function EditChatDisplay({ folderID, chatID, chatTitle }: EditChatDisplay
         }
 
         // Update chat memory/title in chat object
-        const chatRes = await fetch(`${FIREBASE_DB}/chats/${chatID}.json`);
-        let chatData = await chatRes.json();
-        chatData.chattitle = editedTitle;
-        chatData.memoryid = selectedMemory?.memoryID || chatData.memoryid;
-        await fetch(`${FIREBASE_DB}/chats/${chatID}.json`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(chatData),
-        });
+        const chatRes = await ChatHistory.loadFromFirebase(parseInt(chatID), chatTitle);
+        chatRes.setTitle(editedTitle);
+        chatRes.setMemory(selectedMemory.memoryID, selectedMemory.memoryName, selectedMemory.content);
+
+        // Save changes to Firebase
+        await chatRes.saveToFirebase();
 
         // Navigate to the edited chat
         navigate('chatdisplay', { chatID: chatID });

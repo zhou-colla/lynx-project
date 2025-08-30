@@ -102,6 +102,11 @@ export default class ChatHistory {
     return this.chattitle;
   }
 
+  setTitle(title: string) {
+    this.chattitle = title;
+  }
+
+
   static async saveGlobalCounter(count: number) {
     const res = await fetch(`${FIREBASE_DB}/global_counter.json`, {
       method: 'PUT', // PUT overwrites the value
