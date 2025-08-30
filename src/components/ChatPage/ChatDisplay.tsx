@@ -1,53 +1,114 @@
 // ChatDisplay.tsx
-import { useEffect, useState } from '@lynx-js/react'
+import { useEffect, useState } from '@lynx-js/react';
 import type { Dispatch, SetStateAction } from '@lynx-js/react';
-import { UserChatBubble } from './UserChatBubble.js'
-import { AssistantChatBubble } from './AssistantChatBubble.js'
-import { NavBar } from '../TopBar/NavBar.js'
-import { MemoryBar } from '../TopBar/MemoryBar.js'
-import './Chat.css'
-// Import the interfaces from your new file
-import type { ChatData, Chat, ChatMessage } from "../../data/types.ts";
+import { UserChatBubble } from './UserChatBubble.js';
+import { AssistantChatBubble } from './AssistantChatBubble.js';
+import { NavBar } from '../TopBar/NavBar.js';
+import { MemoryBar } from '../TopBar/MemoryBar.js';
+import CrossIcon from '../../assets/cross-icon.png'
+import './Chat.css';
+
+// Import chat session
+import ChatHistory from '../ChatSession/ChatHistory.js';
+import type { ChatEntry } from '../ChatSession/ChatHistory.js';
+
+// Import static chat data (optional for memoryID)
+import type { ChatData, Chat } from "../../data/types.ts";
 import data from "../../data/chats.json" with { type: "json" };
 const chatData: ChatData = data;
 
 export function ChatDisplay(props: { chatID: string }) {
-  const [messages, setMessages] = useState<typeof chatData.chats[0]["messages"]>([])
-
-  const [memoryID, setMemoryID] = useState("")
+  const [messages, setMessages] = useState<ChatEntry[]>([]);
+  const [memoryID, setMemoryID] = useState("");
+  const [isLoadingChatHistory, setIsLoadingChatHistory] = useState(true);
+  const [isReplying, setIsReplying] = useState(false);
+  const [replyMessageText, setReplyMessageText] = useState("");
+  const [input, setInput] = useState('Ask me any question');
 
   useEffect(() => {
-    const chat = chatData.chats.find((c: Chat) => c.chatID === props.chatID)
-    if (chat) {
-      setMessages(chat.messages);
-      setMemoryID(chat.memoryID);
-    }
-  }, [props.chatID])
+    const fetchChatHistory = async () => {
+      try {
+        // Load chat from Firebase
+        // To Sirui: If you wanna test it change 1 below to chatID
+        const chatInstance = await ChatHistory.loadFromFirebase(1, "title");
+        const history = chatInstance.getHistory();
+        setMessages(history);
 
-  
+        // Optionally set memoryID from static chat data (isn't this compulsory?)
+        const chat: Chat | undefined = chatData.chats.find((c: Chat) => c.chatID === props.chatID); 
+        if (chat) setMemoryID(chat.memoryID);
+      } catch (err) {
+        console.error("Failed to load chat history:", err);
+        setMessages([]);
+      } finally {
+        setIsLoadingChatHistory(false);
+      }
+    };
 
+    fetchChatHistory();
+  }, [props.chatID]);
+
+  if (isLoadingChatHistory) {
+    return <text className="centered-text">Loading chat history...</text>;
+  } // newly added
+
+  const lastIndex : number = (messages.length)-1
+ 
   return (
-    // add navigation bar here
-    // input box also put here + reply logic
-    // thinking of how to handle the situation when messages is empty list
-    // later need to change the message part as scrollable part
     <view>
       <NavBar />
-      <MemoryBar memoryID={memoryID} setMemoryID={setMemoryID}/>
-      <view className="chat-display">
+      <MemoryBar memoryID={memoryID} setMemoryID={setMemoryID} />
+      <view className="dialog-display-and-input">
+        <list 
+        className="dialog-display"
+        scroll-orientation="vertical"
+        initial-scroll-index={lastIndex}
+      >
         {messages.length === 0 ? (
-          <text className="centered-text">What can I help with</text>
+          <list-item item-key="empty">
+            <text className="centered-text">What can I help with</text>
+          </list-item>
         ) : (
-          messages.map((msg: ChatMessage) =>
-            msg.role === "user" ? (
-              <UserChatBubble key={msg.messageID} text={msg.text} />
-            ) : (
-              <AssistantChatBubble key={msg.messageID} text={msg.text} />
-            )
-          )
+          messages.map((msg: ChatEntry, index) => (
+            <list-item 
+              key={index}
+              item-key={index.toString()}
+              className="dialog-list-item"
+            >
+              {msg.role === "user" ? (
+                <UserChatBubble text={msg.parts[0].text} />
+              ) : (
+                <AssistantChatBubble 
+                  text={msg.parts[0].text} 
+                  setIsReplying={setIsReplying} 
+                  setReplyMessageText={setReplyMessageText}/>
+              )}
+            </list-item>
+          ))
         )}
+        </list>
+        {/* Let the optional text only show the first five line and scrollable*/}
+        {isReplying && (
+          <view className="optional-reply-bar">
+            <text className="optional-text">{replyMessageText}</text>
+            <image 
+              src={CrossIcon} 
+              className="close-reply-icon"
+              bindtap={() => {
+                setIsReplying(false);
+                setReplyMessageText("");
+              }}
+            />
+          </view>
+        )}
+        <view className="input-box-container">
+          <input
+            value={input}
+            placeholder={input}
+            bindinput={e => setInput(e.detail.value)}
+          />
+        </view>
       </view>
     </view>
-    
-  )
+  );
 }
