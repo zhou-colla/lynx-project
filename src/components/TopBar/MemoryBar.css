@@ -38,24 +38,26 @@
 
 .memory-list {
   width: 100%;
-  height: 112px;
-  background-color: white;
-  margin-top: 4px;
-  overflow: hidden;
+  height: 113px;
+  background-color: rgb(230, 230, 230);
+  margin-top: 11px;
+  border-radius: 12px;
 }
 
 .memory-list-item {
   height: 45px;
+  border-radius: 12px;
+  background-color: transparent;
   display: flex;
   align-items: center;
   padding: 0 16px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 3px solid #eee;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .memory-list-item.current-memory {
-  background-color: #e0e0e0;
+  background-color: #b5b4b4;
 }
 
 .memory-list-text {
