@@ -310,6 +310,13 @@ export function EditChatDisplay({ folderID, chatID, chatTitle }: EditChatDisplay
                         >
                             <text>Save</text>
                         </view>
+                        <view
+                            className="cancel-chat-btn"
+                            style={{ marginLeft: "12px", background: "#eee", color: "#333", padding: "8px 16px", borderRadius: "6px", cursor: "pointer", display: "block" }}
+                            bindtap={() => navigate('menudisplay')}
+                        >
+                            <text>Cancel</text>
+                        </view>
                     </view>
                 </view>
 
