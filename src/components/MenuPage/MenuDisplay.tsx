@@ -311,15 +311,15 @@ export function MenuPage() {
                   </view>
                 ) : (
                   <>
+                    {!isRenameMode && (
+                      <text style={{ marginLeft: '8px' }}>{openFolder === folder.id ? '▾' : '▸'}</text>
+                    )}
                     <text style={{ 
-                      color: isRenameMode ? '#3b82f6' : 'inherit',
+                      color: isRenameMode ? '#385542' : 'inherit',
                       textDecoration: isRenameMode ? 'underline' : 'none'
                     }}>
                       {folder.name} ({folder.chats.length})
                     </text>
-                    {!isRenameMode && (
-                      <text style={{ marginLeft: '8px' }}>{openFolder === folder.id ? '▾' : '▸'}</text>
-                    )}
                     {isRenameMode && (
                       <text style={{ marginLeft: '8px', fontSize: '12px', color: '#6b7280' }}>
                         Click to rename
