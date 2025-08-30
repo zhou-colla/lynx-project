@@ -1,4 +1,6 @@
+import type { Memory } from "../../data/types.js";
 import { FIREBASE_DB } from "../../Env.js";
+import { defaultMemory } from "../MemoryPage/MemoryDisplay.js";
 
 // ChatHistory.ts
 export interface ChatPart {
@@ -10,14 +12,9 @@ export interface ChatEntry {
   parts: ChatPart[];
 }
 
-export interface MemoryEntry {
-  id: string;
-  title: string;
-  value: string;
-}
 
 export default class ChatHistory {
-  constructor(chatid: number, chattitle: string = "Untitled Chat", history: ChatEntry[] = [], memory: MemoryEntry = {id: "", title: "", value: ""}) {
+  constructor(chatid: number, chattitle: string = "Untitled Chat", history: ChatEntry[] = [], memory: Memory) {
 
     this.chatid = chatid;
     this.chattitle = chattitle;
@@ -30,7 +27,7 @@ export default class ChatHistory {
   private chatid: number = -1;
   private chattitle: string = '';
   private history: ChatEntry[] = [];
-  private memory: MemoryEntry = { id: "0", title: "[This is for your background information, you do not have to explcily reply it, treat it as your memory about me] S", value: "S is sweet" };
+  private memory: Memory = { memoryID: "0", memoryName: "[This is for your background information, you do not have to explcily reply it, treat it as your memory about me] S", content: "S is sweet" };
   private replyMessage: ChatEntry = { role: 'user', parts: [{ text: '' }] };
 
   setReplyMessage(message: string) {
@@ -68,20 +65,20 @@ export default class ChatHistory {
 
   //   Memory Management
   setMemory(id: string, title: string, value: string) {
-    this.memory["id"] = id;
-    this.memory["title"] = "[This is for your background information, you do not have to explcily reply it, treat it as your memory about me] " + title;
-    this.memory["value"] = value;
+    this.memory["memoryID"] = id;
+    this.memory["memoryName"] = "[This is for your background information, you do not have to explcily reply it, treat it as your memory about me] " + title;
+    this.memory["content"] = value;
   }
 
   clearMemory() {
-    this.memory = { id: "", title: "", value: "" };
+    this.memory = { memoryID: "", memoryName: "", content: "" };
   }
 
   getHistory(): ChatEntry[] {
     return this.history;
   }
 
-  getMemory(): MemoryEntry {
+  getMemory(): Memory {
     return this.memory;
   }
 
@@ -89,7 +86,7 @@ export default class ChatHistory {
     const memoryEntries: ChatEntry[] = [
       {
         role: 'user',
-        parts: [{ text: `${this.memory.title}: ${this.memory.value}` }]
+        parts: [{ text: `${this.memory.memoryName}: ${this.memory.content}` }]
       }
     ];
 
@@ -101,6 +98,9 @@ export default class ChatHistory {
     return [...memoryEntries, ...this.history];
   }
 
+  getTitle(): string {
+    return this.chattitle;
+  }
 
   static async saveGlobalCounter(count: number) {
     const res = await fetch(`${FIREBASE_DB}/global_counter.json`, {
@@ -144,7 +144,7 @@ export default class ChatHistory {
       return new ChatHistory(chatid, title, history, memory);
     } else {
       console.log("No data found for chat:", chatid);
-      return new ChatHistory(chatid, title);
+      return new ChatHistory(chatid, title, [], defaultMemory);
     }
   }
 
