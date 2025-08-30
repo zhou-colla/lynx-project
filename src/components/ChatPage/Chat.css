@@ -1,7 +1,13 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Make the container fill the entire viewport height */
+}
+
 .dialog-display-and-input {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 100px); 
+  justify-content: flex-end;
 }
 
 .dialog-display {
