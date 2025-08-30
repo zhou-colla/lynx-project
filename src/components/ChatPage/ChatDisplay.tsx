@@ -43,7 +43,7 @@ export function ChatDisplay(props: { chatID: string }) {
         const chatInstance = await ChatHistory.loadFromFirebase(chatIdNum, "title");
         setChatInstance(chatInstance);
         setMessages(chatInstance.getHistory());
-        setMemoryID(chatInstance.getMemory().id);
+        setMemoryID(chatInstance.getMemory().memoryID);
 
         const chat: Chat | undefined = chatData.chats.find((c: Chat) => c.chatID === props.chatID);
         if (chat) setMemoryID(chat.memoryID);
