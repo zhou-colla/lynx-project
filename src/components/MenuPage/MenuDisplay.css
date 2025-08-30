@@ -239,7 +239,6 @@
   min-width: 180px;
   max-height: 200px;
   margin-top: 4px;
-  overflow-y: auto;
 }
 
 .edit-dropdown-item {
@@ -424,16 +423,6 @@
 
 .dropdown-item:hover {
   background: #f3f4f6;
-}
-
-/* Scrollbar Styling - Touch Friendly */
-.menu-section {
-  /* Enable smooth scrolling on touch devices */
-}
-
-.dropdown-menu,
-.edit-dropdown-menu {
-  /* Enable smooth scrolling on touch devices */
 }
 
 /* Add scroll indicators for better UX on touch */
