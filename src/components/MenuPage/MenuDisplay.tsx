@@ -5,6 +5,7 @@ import { FIREBASE_DB } from '../../Env.js'
 
 import EditIcon from '../../assets/edit-icon.png';
 import DeleteIcon from '../../assets/delete-icon.png';
+import CrossIcon from '../../assets/cross-icon.png';
 
 import { MenuChat } from './MenuChat.js';
 
@@ -209,7 +210,12 @@ export function MenuPage() {
     <view className="menu-container">
       <view className="menu-header">
         <text className="menu-title">Menu</text>
-        <view className="close-btn">✕</view>
+        <image 
+          className="close-btn-img" 
+          src={CrossIcon} 
+          style={{ width: "25px", height: "25px" }}
+          bindtap={() => closeMenu()}
+        />
       </view>
 
       <view className="menu-actions">
