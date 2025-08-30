@@ -1,65 +1,113 @@
-import { useState } from '@lynx-js/react'
+import { useState, useEffect } from '@lynx-js/react'
 import './MenuDisplay.css'
+import { Folder } from './Folder.js'
 
 export function MenuPage() {
-  const [openFolder, setOpenFolder] = useState<string | null>(null)
+  const [openFolder, setOpenFolder] = useState<number | null>(null)
   const [openMemory, setOpenMemory] = useState<string | null>('Default Memory')
-  
-  const [folders, setFolders] = useState([
-    { name: 'Folder 1', chats: ['Chat 1', 'Chat 2'] },
-    { name: 'Folder 2', chats: [] },
-    { name: 'Folder 3', chats: ['Chat 3'] },
-  ])
+  const [folders, setFolders] = useState<Folder[]>([])
 
-  const handleCreateNewFolder = () => {
-    // Determine the next folder number by checking the current number of folders
-    const nextFolderNumber = folders.length + 1
-    const newFolderName = `Folder ${nextFolderNumber}`
+  useEffect(() => {
+    async function loadFolders() {
+      const allFolders = await Folder.getAllFromFirebase()
+      setFolders(allFolders)
+    }
+    loadFolders()
+  }, [])
 
-    // Add the new folder to the state
-    setFolders([...folders, { name: newFolderName, chats: [] }])
+  const handleCreateNewFolder = async () => {
+    const nextFolderId = folders.length > 0 ? Math.max(...folders.map(f => f.id)) + 1 : 1
+    const newFolderName = `Folder ${nextFolderId}`
+    const newFolder = new Folder(nextFolderId, newFolderName)
+
+    await newFolder.saveToFirebase()
+    setFolders([...folders, newFolder])
+  }
+
+  const handleDeleteFolder = async (folderId: number) => {
+    const folderToDelete = folders.find(folder => folder.id === folderId)
+    if (folderToDelete) {
+      setFolders(folders.filter(folder => folder.id !== folderId))
+
+      try {
+        await folderToDelete.deleteFromFirebase()
+      } catch (error) {
+        console.error('Failed to delete folder from Firebase:', error)
+      }
+    }
+  }
+
+  const handleCreateNewChat = async () => {
+    if (folders.length > 0) {
+      const folderToUpdate = folders[0]
+      const nextChatId = folderToUpdate.chats.length > 0 ? Math.max(...folderToUpdate.chats.map(chat => chat.id)) + 1 : 1
+      const newChat = {
+        id: nextChatId,
+        title: `New Chat ${nextChatId}`,
+      }
+
+      const updatedChats = [...folderToUpdate.chats, newChat]
+      const updatedFolder = new Folder(folderToUpdate.id, folderToUpdate.name, updatedChats)
+      
+      try {
+        // Use the new method to update just the chats array
+        await updatedFolder.updateChatsInFirebase()
+        setFolders(folders.map(folder => 
+          folder.id === updatedFolder.id ? updatedFolder : folder
+        ))
+      } catch (error) {
+        console.error('Failed to update folder with new chat:', error)
+      }
+    }
   }
 
   return (
     <view className="menu-container">
-      {/* Header */}
       <view className="menu-header">
         <text className="menu-title">Menu</text>
         <view className="close-btn">✕</view>
       </view>
 
-      {/* New Chat + My Memory + New Folder button */}
       <view className="menu-actions">
-        <view className="menu-action">＋ New chat</view>
+        <view className="menu-action" bindtap={handleCreateNewChat}>＋ New chat</view>
         <view className="menu-action">🧠 My Memory</view>
-        <view className="menu-action" bindtap={handleCreateNewFolder}>
-          ＋ New Folder
-        </view>
       </view>
 
-      {/* Chat Folders */}
       <view className="menu-section">
-        {/* The Chats title will now appear without an edit icon */}
-        <text className="section-title">Chats</text>
-        {folders.map((folder, idx) => (
-          <view key={idx} className="folder">
-            <view
-              className="folder-header"
-              bindtap={() =>
-                setOpenFolder(openFolder === folder.name ? null : folder.name)
-              }
-            >
-              <text>{folder.name}</text>
-              <text>{openFolder === folder.name ? '▾' : '▸'}</text>
+        <view className="chats-header">
+          <text className="section-title">Chats</text>
+          <view className="add-folder" bindtap={handleCreateNewFolder}>
+            <image
+              className="add-folder__icon"
+              src={require('../../assets/add-icon-circle.png')}
+            />
+          </view>
+        </view>
+        {folders.map(folder => (
+          <view key={folder.id} className="folder">
+            <view className="folder-header">
+              <view
+                bindtap={() => setOpenFolder(openFolder === folder.id ? null : folder.id)}
+                style={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}
+              >
+                <text>{folder.name}</text>
+                <text style={{ marginLeft: '8px' }}>{openFolder === folder.id ? '▾' : '▸'}</text>
+              </view>
+              <view
+                className="chat-options"
+                bindtap={() => handleDeleteFolder(folder.id)}
+              >
+                <text>DELETE</text>
+              </view>
             </view>
-            {openFolder === folder.name && (
+            {openFolder === folder.id && (
               <view className="folder-chats">
                 {folder.chats.length === 0 ? (
                   <text className="empty-text">No chats</text>
                 ) : (
-                  folder.chats.map((chat, cIdx) => (
-                    <view key={cIdx} className="chat-item">
-                      <text>{chat}</text>
+                  folder.chats.map(chat => (
+                    <view key={chat.id} className="chat-item">
+                      <text>{chat.title}</text>
                       <view className="chat-options">⋮</view>
                     </view>
                   ))
