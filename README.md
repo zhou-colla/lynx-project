@@ -1,7 +1,8 @@
 # Contextual
 
+
 ## Overview
-Contextual is a **mobile-first application** built with **Lynx JS** and **TypeScript** for managing chat sessions, folders, and memories. It leverages **Firebase** for persistent cloud storage and is designed to provide a seamless, intuitive experience for organizing conversations and contextual information on mobile devices.
+Stop re-prompting your AI: A mobile AI agent with persistent, project-based memory for seamless cross-session continuity. Contextual is a **mobile-first application** built with **Lynx JS** and **TypeScript** for managing chat sessions, folders, and memories. It leverages **Firebase** for persistent cloud storage and is designed to provide a seamless, intuitive experience for organizing conversations and contextual information on mobile devices. #TechJam 2025
 
 ---
 
